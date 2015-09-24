@@ -149,16 +149,21 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 
 		if (!listSerialNumbers.contains(packet.serial_prefix + ""
 				+ packet.serial_number)
-				&& packet.serial_prefix == 'R') {
-
-			listSerialNumbers.add(packet.serial_prefix + ""
-					+ packet.serial_number);
-
-			System.err.println("added serial number to list: "
-					+ packet.serial_prefix + "" + packet.serial_number);
-			System.err.println("list now contains: "
-					+ listSerialNumbers);
-			selectPanel.updateList(packet.serial_prefix, packet.serial_number);
+				&& packet.serial_prefix == 'R' ) {
+			if(selectPanel.model != null){
+				listSerialNumbers.add(packet.serial_prefix + ""
+						+ packet.serial_number);
+	
+				System.err.println("added serial number to list: "
+						+ packet.serial_prefix + "" + packet.serial_number);
+				System.err.println("list now contains: "
+						+ listSerialNumbers);
+				selectPanel.updateList(packet.serial_prefix, packet.serial_number);
+			}
+			else{
+				
+				return;
+			}
 		}
 		
 		
