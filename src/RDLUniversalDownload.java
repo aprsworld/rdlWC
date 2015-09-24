@@ -192,8 +192,6 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 			pLive.updateNow(rLive);
 			/* immediately do a status query */
 			requestStatus();
-			/*enable download button*/
-			pDownload.bDownload.setEnabled(true);
 		} else if (8 == packet.type) {
 			/* Status packet */
 			rStatus.parseRecord(packet.packet);
@@ -340,6 +338,8 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 		buff[12] = lCRC & 0xff;
 
 		remote.sendPacket(buff);
+		/*enable download button*/
+		pDownload.bDownload.setEnabled(true);
 	}
 
 	public void requestLogInit() {
