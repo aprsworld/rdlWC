@@ -71,14 +71,14 @@ public class SelectionPanel {
 			return true;
 		}
 		else{
-			System.err.println(jlSerialNumbers.getModel());
+			System.err.println("not null");
 			return false;
 		}
 	}
 	public void updateList(char pref, int ser) {
 		if(jlSerialNumbers.getModel() != null){
 			model.ensureCapacity(model.getSize()+1);
-			model.addElement(pref+""+ser);
+			model.addElement(pref+"_"+ser);
 		}
 		else{
 			System.err.println("GUI not fully created yet - "+pref+""+ser+" not yet added");
