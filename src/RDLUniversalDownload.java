@@ -139,15 +139,7 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 		if (!packet.isValid()){
 			return;
 		}
-		
-		/*
-		 * ignore packets until we get a serial number response from the
-		 * customer
-		 */
-		if (0 == serialPrefix && 0 == serialNumber){
-			return;
-		}
-		
+
 		/*
 		 * check if the packet serial number is in a list, if not, add it to the
 		 * list and continue. if it is in the list, then return
@@ -164,15 +156,26 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 
 			System.err.println("added serial number to list: "
 					+ packet.serial_prefix + "" + packet.serial_number);
-
+			System.err.println("list now contains: "
+					+ listSerialNumbers);
 			selectPanel.updateList(packet.serial_prefix, packet.serial_number);
 		}
-
+		
+		
+		/*
+		 * ignore packets until we get a serial number response from the
+		 * customer
+		 */
+		if (0 == serialPrefix && 0 == serialNumber){
+			return;
+		}
+		
+		
 		if ((0 == serialPrefix && 0 == serialNumber)
 				&& (7 == packet.type || 8 == packet.type || 31 == packet.type)) {
 			// selectSerial(packet.serial_prefix, packet.serial_number);
 
-		}
+		}			
 
 		/* ignore packets that aren't for us */
 		if (packet.serial_prefix != serialPrefix
