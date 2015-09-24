@@ -136,9 +136,18 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 		// System.err.println("# received: " + s.i );
 		// System.err.println("# received a packet: " + packet);
 
-		if (!packet.isValid())
+		if (!packet.isValid()){
 			return;
-
+		}
+		
+		/*
+		 * ignore packets until we get a serial number response from the
+		 * customer
+		 */
+		if (0 == serialPrefix && 0 == serialNumber){
+			return;
+		}
+		
 		/*
 		 * check if the packet serial number is in a list, if not, add it to the
 		 * list and continue. if it is in the list, then return
@@ -164,13 +173,6 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 			// selectSerial(packet.serial_prefix, packet.serial_number);
 
 		}
-
-		/*
-		 * ignore packets until we get a serial number response from the
-		 * customer
-		 */
-		if (0 == serialPrefix && 0 == serialNumber)
-			return;
 
 		/* ignore packets that aren't for us */
 		if (packet.serial_prefix != serialPrefix
