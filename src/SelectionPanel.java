@@ -66,7 +66,14 @@ public class SelectionPanel {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
-
+	public boolean listNull(){
+		if(model == null){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
 	public void updateList(char pref, int ser) {
 		if(jlSerialNumbers.getModel() != null){
 			model.ensureCapacity(model.getSize()+1);

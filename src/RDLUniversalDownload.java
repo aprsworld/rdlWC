@@ -139,17 +139,17 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 		if (!packet.isValid()){
 			return;
 		}
-
+		if (selectPanel.listNull() == true){
+			return;		
+		}
 		/*
 		 * check if the packet serial number is in a list, if not, add it to the
 		 * list and continue. if it is in the list, then return
 		 */
 		// System.out.println("found: " + packet.serial_prefix + ""
 		// + packet.serial_number);
-
-		if (!listSerialNumbers.contains(packet.serial_prefix + ""
-				+ packet.serial_number)
-				&& packet.serial_prefix == 'R' ) {
+		
+		if (!listSerialNumbers.contains(packet.serial_prefix + "" + packet.serial_number) && packet.serial_prefix == 'R' ) {
 				listSerialNumbers.add(packet.serial_prefix + ""
 						+ packet.serial_number);
 	
