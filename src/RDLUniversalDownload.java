@@ -139,9 +139,6 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 		if (!packet.isValid()){
 			return;
 		}
-		if (selectPanel.listNull() == true){
-			return;		
-		}
 		/*
 		 * check if the packet serial number is in a list, if not, add it to the
 		 * list and continue. if it is in the list, then return
@@ -150,14 +147,20 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 		// + packet.serial_number);
 		
 		if (!listSerialNumbers.contains(packet.serial_prefix + "" + packet.serial_number) && packet.serial_prefix == 'R' ) {
-				listSerialNumbers.add(packet.serial_prefix + ""
-						+ packet.serial_number);
-	
-				System.err.println("added serial number to list: "
-						+ packet.serial_prefix + "" + packet.serial_number);
-				System.err.println("list now contains: "
-						+ listSerialNumbers);
-				selectPanel.updateList(packet.serial_prefix, packet.serial_number);
+			/* listNull() tests to make sure the selection panel has been initialized before adding to it - This
+			 * avoids a null pointer exception that broke the program when a packet would come in while
+			 * the program was starting up. */
+			if (selectPanel.listNull() == true){
+				return;		
+			}
+			listSerialNumbers.add(packet.serial_prefix + ""
+					+ packet.serial_number);
+
+			System.err.println("added serial number to list: "
+					+ packet.serial_prefix + "" + packet.serial_number);
+			System.err.println("list now contains: "
+					+ listSerialNumbers);
+			selectPanel.updateList(packet.serial_prefix, packet.serial_number);
 			
 		}
 		

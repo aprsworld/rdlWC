@@ -66,12 +66,12 @@ public class SelectionPanel {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
+	/* tests to make sure jlSerial has been initialized */
 	public boolean listNull(){
 		if(jlSerialNumbers.getModel() == null){
 			return true;
 		}
 		else{
-			System.err.println("not null");
 			return false;
 		}
 	}
@@ -79,7 +79,6 @@ public class SelectionPanel {
 		if(jlSerialNumbers.getModel() != null){
 			model.ensureCapacity(model.getSize()+1);
 			model.addElement(pref+""+ser);
-			System.err.println("test");
 		}
 		else{
 			System.err.println("GUI not fully created yet - "+pref+""+ser+" not yet added");
