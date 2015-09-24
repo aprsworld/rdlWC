@@ -79,6 +79,7 @@ public class SelectionPanel {
 		if(jlSerialNumbers.getModel() != null){
 			model.ensureCapacity(model.getSize()+1);
 			model.addElement(pref+"_"+ser);
+			System.err.println("test");
 		}
 		else{
 			System.err.println("GUI not fully created yet - "+pref+""+ser+" not yet added");
