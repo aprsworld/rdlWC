@@ -54,6 +54,7 @@ public class SelectionPanel {
 							.toString());
 					buttonAction(jlSerialNumbers.getSelectedValue().toString());
 					frame.setVisible(false);
+					pDownload.bDownload.setEnabled(true);
 				} else {
 					System.out.println("Nothing selected");
 				}
