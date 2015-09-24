@@ -67,10 +67,11 @@ public class SelectionPanel {
 		frame.setVisible(true);
 	}
 	public boolean listNull(){
-		if(model == null){
+		if(jlSerialNumbers.getModel() == null){
 			return true;
 		}
 		else{
+			System.err.println(jlSerialNumbers.getModel());
 			return false;
 		}
 	}
