@@ -192,14 +192,12 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 			pLive.updateNow(rLive);
 			/* immediately do a status query */
 			requestStatus();
-			/*enable download button*/
-			pDownload.bDownload.setEnabled(true);
+	
 		} else if (8 == packet.type) {
 			/* Status packet */
 			rStatus.parseRecord(packet.packet);
 			pStatus.updateNow(rStatus);
-			/*enable download button*/
-			pDownload.bDownload.setEnabled(true);
+
 		} else if (21 == packet.type) {
 			/* History Packet */
 			rHistory.parseRecord(packet.packet);
@@ -217,8 +215,7 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 									recordNumber, windHistoryRecord.length);
 				}
 			}
-			/*enable download button*/
-			pDownload.bDownload.setEnabled(true);
+
 		} else {
 			System.out.printf("# Unknown packet type 0x%02X\n", packet.type);
 		}

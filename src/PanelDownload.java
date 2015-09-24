@@ -59,7 +59,6 @@ public class PanelDownload extends JPanel  {
 		add(tFilename);
 		
 		bDownload = new JButton("Download Now");
-		bDownload.setEnabled(false);
 		add(bDownload);
 //		bDownloadFRAM = new JButton("Download FRAM Now");
 //		add(bDownloadFRAM);
