@@ -68,7 +68,7 @@ public class SelectionPanel {
 	}
 
 	public void updateList(char pref, int ser) {
-		if(model != null){
+		if(jlSerialNumbers.getModel() != null){
 			model.ensureCapacity(model.getSize()+1);
 			model.addElement(pref+""+ser);
 		}
