@@ -68,6 +68,7 @@ public class SelectionPanel {
 	}
 
 	public void updateList(char pref, int ser) {
+		model.ensureCapacity(model.getSize()+1);
 		model.addElement(pref+""+ser);
 
 	}
