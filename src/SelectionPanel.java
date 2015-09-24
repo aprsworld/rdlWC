@@ -54,7 +54,6 @@ public class SelectionPanel {
 							.toString());
 					buttonAction(jlSerialNumbers.getSelectedValue().toString());
 					frame.setVisible(false);
-					pDownload.bDownload.setEnabled(true);
 				} else {
 					System.out.println("Nothing selected");
 				}
@@ -91,6 +90,7 @@ public class SelectionPanel {
 			pDownload.setDownloadFileNamePrefix(serialNumber);
 			rdl.serialPrefix = serialNumber.charAt(0);
 			rdl.serialNumber = Integer.parseInt(serialNumber.substring(1));
+			pDownload.bDownload.setEnabled(true);
 		}
 	}
 }
