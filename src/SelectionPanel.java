@@ -68,9 +68,13 @@ public class SelectionPanel {
 	}
 
 	public void updateList(char pref, int ser) {
-		model.ensureCapacity(model.getSize()+1);
-		model.addElement(pref+""+ser);
-
+		if(model != null){
+			model.ensureCapacity(model.getSize()+1);
+			model.addElement(pref+""+ser);
+		}
+		else{
+			System.err.println("GUI not fully created yet - "+pref+""+ser+" not yet added");
+		}
 	}
 
 	public void buttonAction(String serialNumber) {
