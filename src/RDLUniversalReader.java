@@ -64,7 +64,9 @@ public class RDLUniversalReader implements SerialPortEventListener {
 
 		for ( int i=0 ; i<packetListeners.size(); i++ ) {
 			//			System.err.println("# sent to listener: " + i);
-			packetListeners.elementAt(i).packetReceived(packet);
+			if(packetListeners != null){
+				packetListeners.elementAt(i).packetReceived(packet);
+			}
 		}
 	}
 
