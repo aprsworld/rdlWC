@@ -531,7 +531,12 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 
 		pDownload.bLogInit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				requestLogInit();
+				int reply = JOptionPane.showConfirmDialog(null, "WARNING! This will erase all recorded data from the data logger's internal memory. This should be done on a regular \n basis, but make sure you have downloaded a valid copy of the data before doing so. Are you sure you want to do this?", "Clear Data?",  JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				
+				if (reply == JOptionPane.YES_OPTION)
+				{
+					requestLogInit();
+				}
 			}
 		});
 		content.add(pDownload);
