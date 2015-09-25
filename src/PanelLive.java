@@ -10,8 +10,7 @@ public class PanelLive extends JPanel  {
 	protected JLabel lSerialNumber;
 	protected JLabel lWs,lWg,lWc, lWindDirection, lBattery;
 	public JButton statusButton;
-
-
+	
 	public void updateNow(RecordRDLoggerCell r) {
 
 		//		System.err.println("# pStatus updateNow() called");
@@ -41,7 +40,7 @@ public class PanelLive extends JPanel  {
 
 		lBattery.setText(r.batteryStateOfCharge + "%");
 		lWindDirection.setText(r.windDirectionSector*45 + " degrees from boom");
-		
+
 	}
 
 	public PanelLive() {

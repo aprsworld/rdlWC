@@ -90,7 +90,6 @@ public class SelectionPanel {
 			pDownload.setDownloadFileNamePrefix(serialNumber);
 			rdl.serialPrefix = serialNumber.charAt(0);
 			rdl.serialNumber = Integer.parseInt(serialNumber.substring(1));
-			pDownload.bDownload.setEnabled(true);
 		}
 	}
 }

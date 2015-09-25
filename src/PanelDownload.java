@@ -60,10 +60,14 @@ public class PanelDownload extends JPanel  {
 		
 		bDownload = new JButton("Download Now");
 		add(bDownload);
+		//disable download button until data comes in
+		bDownload.setEnabled(false); 
 //		bDownloadFRAM = new JButton("Download FRAM Now");
 //		add(bDownloadFRAM);
 		
 		bLogInit = new JButton("Clear Logger Memory");
+		//disable clear button until data comes in
+		bLogInit.setEnabled(false); 
 		add(bLogInit);
 		
 	}

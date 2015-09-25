@@ -36,6 +36,7 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 
 	protected char serialPrefix;
 	protected int serialNumber;
+	protected boolean updated = false;
 
 	protected RDLUniversalReader remote;
 	protected RecordRDLoggerCellStatus rStatus;
@@ -192,7 +193,17 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 			pLive.updateNow(rLive);
 			/* immediately do a status query */
 			requestStatus();
-	
+				if(updated == false){
+					if(pLive.lSerialNumber.getText() == "---"){
+						System.err.println("got here");
+						updated = false;
+					}
+					else{
+						pDownload.bDownload.setEnabled(true); 
+						pDownload.bLogInit.setEnabled(true);
+						updated = true;		
+					}				
+				}
 		} else if (8 == packet.type) {
 			/* Status packet */
 			rStatus.parseRecord(packet.packet);
