@@ -8,6 +8,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 
@@ -15,6 +16,7 @@ public class SelectionPanel {
 
 	JFrame frame;
 	JList jlSerialNumbers;
+	JScrollPane jlScrollPane;
 	JButton select;
 	ListSelectionModel listSelectionModel;
 	DefaultListModel model;
@@ -39,9 +41,11 @@ public class SelectionPanel {
 		instr.setEditable(false);
 		instr.setBackground(Color.WHITE);
 		model = new DefaultListModel();
+		jlScrollPane = new JScrollPane();
 		jlSerialNumbers = new JList();
 		jlSerialNumbers.setModel(model);
 		jlSerialNumbers.setFont(new Font("Arial",Font.BOLD,16));
+		jlScrollPane.setViewportView(jlSerialNumbers);
 		// jlSerialNumbers.setSize(200, 300);
 		select = new JButton("Use this serial number");
 		// select.setSize(100, 200);
@@ -61,7 +65,7 @@ public class SelectionPanel {
 			}
 		});
 		frame.add(instr);
-		frame.add(jlSerialNumbers);
+		frame.add(jlScrollPane);
 		frame.add(select);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
