@@ -267,10 +267,15 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 	public void downloadAll() {
 		int page;
 		int totalPages;
+		int maxPages;
 		double estimatedTime;
 		int sleepTimeMS = 400;
-
+		maxPages = Integer.parseInt(ini.getValueSafe("GENERAL", "max_internal_pages", "4096"));
+		
 		totalPages = rStatus.dataflash_page;
+		if(totalPages >= maxPages){
+			totalPages = maxPages;
+		}
 		// totalPages=10;
 		estimatedTime = 0.001 * sleepTimeMS * totalPages;
 		pMonitor.append(String.format(
@@ -485,7 +490,7 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 
 		String serialPort;
 		int serialSpeed;
-
+		
 		serialPrefix = 0;
 		serialNumber = 0;
 
@@ -495,7 +500,7 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 
 		windHistoryRecord = new String[4097 * 44];
 		log = new LogProcess();
-
+		
 		serialPort = ini.getValueSafe("SERIAL", "port", "COM1");
 		serialSpeed = Integer.parseInt(ini.getValueSafe("SERIAL", "speed",
 				"57600"));
