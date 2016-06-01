@@ -46,7 +46,7 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 	protected long startTime;
 	protected String[] windHistoryRecord;
 	protected LogProcess log;
-	public static final String compileDate = "2014-08-22";
+	public static final String compileDate = "2016-06-01";
 
 	public static int crc_chk(int data[], int start, int length) {
 		int j;
