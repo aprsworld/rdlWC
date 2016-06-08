@@ -32,6 +32,7 @@ public class RDLUniversalSetup extends Thread {
 		String serialPort=ports.elementAt(cbPorts.getSelectedIndex());
 		String max_pages="4096";
 		System.err.println("Serial port " + serialPort + " selected.");
+		//check if max_internal_pages already exists and then create it if it doesn't
 		if(ini.getValue("GENERAL", "max_internal_pages") == null){
 			ini.setValue("GENERAL","max_internal_pages", max_pages);
 		}

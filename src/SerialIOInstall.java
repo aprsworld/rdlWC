@@ -31,14 +31,31 @@ public class SerialIOInstall {
 	public static void installSerialIO() {
 
 		String sourceFile=null;
-		if ( 0==System.getProperty("sun.arch.data.model").compareTo("32") ) {
-			/* 32-bit system */
+		String arch = System.getenv("PROCESSOR_ARCHITECTURE");
+		String wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432");
+
+		String realArch = arch.endsWith("64")
+		                  || wow64Arch != null && wow64Arch.endsWith("64")
+		                      ? "64" : "32";
+		
+		if(realArch == "64"){
+			sourceFile="jspWin.64.dll";
+		
+		}
+		else if(realArch == "32"){
+			sourceFile="jspWin.32.dll";
+
+			
+		}
+		
+		/*if ( 0==System.getProperty("sun.arch.data.model").compareTo("32") ) {
+			// 32-bit system 
 			sourceFile="jspWin.32.dll";
 		} else if ( 0==System.getProperty("sun.arch.data.model").compareTo("64") ) {
-			/* 64-bit system */
+			// 64-bit system 
 			sourceFile="jspWin.64.dll";
 
-		}
+		}*/
 
 		String destFile = "jspWin.dll";
 		if ( null != sourceFile ) {
