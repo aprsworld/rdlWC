@@ -39,7 +39,17 @@ public class SerialIOInstall {
 			sourceFile="jspWin.64.dll";
 
 		}
-
+		if ( null != sourceFile ) {
+			if(0 == System.getProperty("os.arch").compareTo("x86")){
+				sourceFile="jspWin.32.dll";			
+			}
+			else if(0 == System.getProperty("os.arch").compareTo("x64")){
+				sourceFile="jspWin.64.dll";
+			}
+			
+		}
+		
+		
 		String destFile = "jspWin.dll";
 		if ( null != sourceFile ) {
 			File f = new File(sourceFile);
