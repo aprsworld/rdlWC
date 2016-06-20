@@ -35,8 +35,10 @@ public class XbeeSignalStrengthMonitor extends Thread implements PacketListener 
 		
 		
 		serialPort = "COM4";//ini.getValueSafe("SERIAL", "port", "COM1");
-		serialSpeed = 57000;//Integer.parseInt(ini.getValueSafe("SERIAL", "speed",
+		serialSpeed = Integer.parseInt("57000");//Integer.parseInt(ini.getValueSafe("SERIAL", "speed",
 				//"57600"));
+		System.err.println("# Opening " + serialPort + " @ " + serialSpeed);
+
 		
 		RDLUniversalReader remote = new RDLUniversalReader(serialPort, serialSpeed);
 		remote.addPacketListener(this);

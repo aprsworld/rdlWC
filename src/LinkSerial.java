@@ -56,7 +56,7 @@ public class LinkSerial {
 			p.setSerialPortParams(serialSpeed, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 			p.enableReceiveTimeout(65000); /* as long of timeout as possible, fight win32 rxtx bug */
 		} catch ( Exception e ) {
-			System.err.println("# Error configuring serial port.");
+			System.err.println(e+" # Error configuring serial port.");
 			return false;
 		}
 
