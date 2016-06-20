@@ -10,39 +10,37 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 
-public class XbeeSignalStrengthMonitor extends Thread implements ListenerWorldData  {
+public class XbeeSignalStrengthMonitor extends Thread implements PacketListener  {
 	RecordDigiAPIRx packetParser = new RecordDigiAPIRx();
 	
 	SignalData signalData = new SignalData();
 	
 	boolean started = true;
 	
+
 	InputStream mmInStream;
 	
 	protected List<String> listSerialNumbers = new ArrayList<String>();
 	protected List<SignalData> listSignalData = new ArrayList<SignalData>();
-	
+	protected IniFile ini;
+
 	
 	public XbeeSignalStrengthMonitor(){
 		
 	}
 		
 	public void run() {
-		ReaderWorldData r = new ReaderWorldData(mmInStream);
-		r.addPacketListener(this);
-		while ( started ) {
-			try { 
-				
-				r.readForPacket();
-				
-			} catch ( IOException e ) {
-				System.err.println("# caught IOException in go(). Bailing out.");
-				//Log.e("status","# caught IOException in go(). Bailing out.");
-				//breaks out of the while loop if an ioexception is found
-				break;
-			}
-		}
-	
+		String serialPort;
+		int serialSpeed;
+		
+		
+		serialPort = ini.getValueSafe("SERIAL", "port", "COM1");
+		serialSpeed = Integer.parseInt(ini.getValueSafe("SERIAL", "speed",
+				"57600"));
+		
+		RDLUniversalReader remote = new RDLUniversalReader(serialPort, serialSpeed);
+		remote.addPacketListener(this);
+
 	}
 	
 	
@@ -69,39 +67,44 @@ public class XbeeSignalStrengthMonitor extends Thread implements ListenerWorldDa
 
 
 
+
 	@Override
-	public void worldDataPacketReceived(int packetType, int serialPrefix, int serialNumber, int[] data, long timeMilli) {
-			packetParser.parseRecord(data);
+	public void packetReceived(WorldDataPacket packet) {
+		packetParser.parseRecord(packet.data);
+		System.out.println(packetParser.rssi);
+
+		//add serial to list if not already there
+		if (!listSerialNumbers.contains(packet.serial_prefix+ "" + packet.serial_number) && packet.serial_prefix == 'R' ) {
+			//We found a new serial number so we add it to the list
+			SignalData newSerial = new SignalData();
 			
-			//add serial to list if not already there
-			if (!listSerialNumbers.contains((char)serialPrefix+ "" + serialNumber) && (char)serialPrefix == 'R' ) {
-				//We found a new serial number so we add it to the list
-				SignalData newSerial = new SignalData();
-				
-				newSerial.setSerialNumber((char)serialPrefix+ "" + serialNumber);
-				newSerial.setCurrentStrength(packetParser.rssi);
-				newSerial.addToSignal(packetParser.rssi);
-				newSerial.updateAvg();
-				
-				//add serial number to our list of serial numbers
-				listSerialNumbers.add((char)serialPrefix+ "" + serialNumber);
-				//add signal data to our list of signal data
-				listSignalData.add(newSerial);
-				
-			}
-			//if we have already seen this serial number, update its data
-			else if(listSerialNumbers.contains((char)serialPrefix+ "" + serialNumber) && (char)serialPrefix == 'R'){
-				for(SignalData n : listSignalData){
-					if(n.getSerialNumber().equals((char)serialPrefix+ "" + serialNumber)){
-						n.setCurrentStrength(packetParser.rssi);
-						n.addToSignal(packetParser.rssi);
-						n.updateAvg();
-					}
+			newSerial.setSerialNumber(packet.serial_prefix+ "" + packet.serial_number);
+			newSerial.setCurrentStrength(packetParser.rssi);
+			newSerial.addToSignal(packetParser.rssi);
+			newSerial.updateAvg();
+			
+			//add serial number to our list of serial numbers
+			listSerialNumbers.add(packet.serial_prefix+ "" + packet.serial_number);
+			//add signal data to our list of signal data
+			listSignalData.add(newSerial);
+			System.out.println(packetParser.rssi);
+
+		}
+		//if we have already seen this serial number, update its data
+		else if(listSerialNumbers.contains(packet.serial_prefix+ "" + packet.serial_number) && packet.serial_prefix == 'R'){
+			for(SignalData n : listSignalData){
+				if(n.getSerialNumber().equals(packet.serial_prefix+ "" + packet.serial_number)){
+					n.setCurrentStrength(packetParser.rssi);
+					n.addToSignal(packetParser.rssi);
+					n.updateAvg();
 				}
 			}
-			else{
-				//do nothing wrong serial prefix most likely
-			}
+			
+			System.out.println(packetParser.rssi);
+		}
+		else{
+			//do nothing - wrong serial prefix most likely
+		}
 	}
 
 }
