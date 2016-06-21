@@ -1,3 +1,5 @@
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -6,18 +8,19 @@ public class SignalData {
 	
 	//data
 	private Vector<Integer> signalStrength = new Vector <Integer>(50);
-	private double currentStrength,
+	private Integer currentStrength,
 	minStrength = 30000, //high number
-	maxStrength = 0.0, 
-	avgStrength = 0.0;
+	maxStrength = 0; 
+	private Double avgStrength = 0.0;
 	private int packetCount;
 	private String serialNumber;
+	DecimalFormat dformat = new DecimalFormat("#.##");
 	
 	
 	
 	//constructor
 	public SignalData(){
-				
+		dformat.setRoundingMode(RoundingMode.CEILING);
 	}
 
 	public int getPacketCount() {
@@ -28,9 +31,13 @@ public class SignalData {
 		this.packetCount = packetCount;
 	}
 	
+	public void incPacketCount() {
+		this.packetCount++;
+	}
 	//methods
 	
 	//finds average
+	
 	public void updateAvg(){
 		Iterator itr = signalStrength.iterator();
 		Integer nextItem, sum = 0;
@@ -41,7 +48,7 @@ public class SignalData {
 		}
 		
 		
-		this.avgStrength= sum/size;		
+		this.avgStrength= Double.valueOf(dformat.format((double)sum/size));		
 	}
 	public double getAvg() {
 		return  avgStrength;
@@ -49,7 +56,6 @@ public class SignalData {
 	
 	public void addToSignal(int rssi){
 		signalStrength.add(rssi);		
-		setPacketCount(getPacketCount() + 1);
 	}
 	
 	public void updateMinMax(Integer signalValue){
@@ -72,14 +78,14 @@ public class SignalData {
 	}
 
 	//gets lowest signal Strength
-	public double getMinStrength() {
+	public Integer getMinStrength() {
 		return this.minStrength;
 	}
-	public double getMaxStrength() {
+	public Integer getMaxStrength() {
 		return this.maxStrength;
 	}
 	//sets lowest signal strength
-	public void setMinStrength(double minStrength) {
+	public void setMinStrength(Integer minStrength) {
 		this.minStrength = minStrength;
 	}
 

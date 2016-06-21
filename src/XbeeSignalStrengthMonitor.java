@@ -7,9 +7,8 @@ import java.util.List;
 
 public class XbeeSignalStrengthMonitor extends Thread implements PacketListener  {
 	RecordDigiAPIRx packetParser = new RecordDigiAPIRx();
-	
 	SignalData signalData = new SignalData();
-	
+	SignalReadingsPanel signalPanel;
 	boolean started = true;
 	
 
@@ -37,6 +36,8 @@ public class XbeeSignalStrengthMonitor extends Thread implements PacketListener 
 		
 		RDLUniversalReader remote = new RDLUniversalReader(serialPort, serialSpeed, 2);
 		remote.addPacketListener(this);
+		signalPanel = new SignalReadingsPanel();
+
 	}
 	
 	
@@ -79,6 +80,8 @@ public class XbeeSignalStrengthMonitor extends Thread implements PacketListener 
 			newSerial.setCurrentStrength(rssi);
 			newSerial.addToSignal(rssi);
 			newSerial.updateAvg();
+			newSerial.updateMinMax(rssi);
+			newSerial.incPacketCount();
 			
 			//add serial number to our list of serial numbers
 			listSerialNumbers.add(packet.serial_prefix+ "" + packet.serial_number);
@@ -86,6 +89,8 @@ public class XbeeSignalStrengthMonitor extends Thread implements PacketListener 
 			listSignalData.add(newSerial);
 			System.out.println(rssi);
 			System.out.println("if");
+			
+			signalPanel.createSection(packet.serial_prefix+ "" + packet.serial_number, newSerial.getAvg(), newSerial.getMinStrength(), newSerial.getMaxStrength(), rssi);
 
 		}
 		//if we have already seen this serial number, update its data
@@ -96,16 +101,19 @@ public class XbeeSignalStrengthMonitor extends Thread implements PacketListener 
 					n.addToSignal(rssi);
 					n.updateAvg();
 					n.updateMinMax(rssi);
+					n.incPacketCount();
+					signalPanel.updateSection(n.getSerialNumber(), n.getAvg(), n.getMinStrength(), n.getMaxStrength(), rssi, n.getPacketCount());
+
 				}
 			}
-			for(SignalData n : listSignalData){
+			/*for(SignalData n : listSignalData){
 				if(n.getSerialNumber().equals(packet.serial_prefix+ "" + packet.serial_number)){
 					System.out.println("Serial Number = "+n.getSerialNumber()+" avg = "+n.getAvg()+" min = "+
 					n.getMinStrength()+" max = "+
 					n.getMaxStrength()+" current = "+
 					n.getCurrentStrength());
 				}
-			}
+			}*/
 			System.out.println(packet.getRSSI());
 			System.out.println("else if");
 		}
