@@ -7,7 +7,29 @@ public class WorldDataPacket {
 	public int type;
 	public int data[];
 	int lCRC, rCRC;
+	
+	//if api mode
+	public int source, rssi, options;
 
+	public void setSource(int src){
+		this.source = src;
+	}
+	public void setRSSI(int rssi){
+		this.rssi = rssi;
+	}
+	public void setOptions(int options){
+		this.options = options;		
+	}
+	public int getOptions(){
+		return this.options;
+	}
+	public int getRSSI(){
+		return this.rssi;
+	}
+	public int getSource(){
+		return this.source;
+	}
+	
 	public int crc_chk(int data[],int start, int length) {
 		int j;
 		int reg_crc=0xFFFF;

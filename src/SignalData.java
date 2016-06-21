@@ -5,8 +5,9 @@ import java.util.Vector;
 public class SignalData {
 	
 	//data
-	private Vector<Integer> signalStrength;
-	private double currentStrength, minStrength, 
+	private Vector<Integer> signalStrength = new Vector <Integer>(50);
+	private double currentStrength,
+	minStrength = 30000, //high number
 	maxStrength = 0.0, 
 	avgStrength = 0.0;
 	private int packetCount;
@@ -32,10 +33,10 @@ public class SignalData {
 	//finds average
 	public void updateAvg(){
 		Iterator itr = signalStrength.iterator();
-		Double nextItem, sum = 0.0;
+		Integer nextItem, sum = 0;
 		int size = signalStrength.size();
 		while(itr.hasNext()){
-			nextItem = (Double) itr.next();
+			nextItem = (Integer) itr.next();
 			sum += nextItem;
 		}
 		
@@ -51,12 +52,12 @@ public class SignalData {
 		setPacketCount(getPacketCount() + 1);
 	}
 	
-	public void updateMinMax(Double signalValue){
-		if(signalValue > maxStrength){
-			maxStrength = signalValue;	
+	public void updateMinMax(Integer signalValue){
+		if(signalValue > this.maxStrength){
+			this.maxStrength = signalValue;	
 		}
-		if(signalValue < minStrength){
-			minStrength = signalValue;
+		if(signalValue < this.minStrength){
+			this.minStrength = signalValue;
 		}
 	}
 
@@ -72,9 +73,11 @@ public class SignalData {
 
 	//gets lowest signal Strength
 	public double getMinStrength() {
-		return minStrength;
+		return this.minStrength;
 	}
-
+	public double getMaxStrength() {
+		return this.maxStrength;
+	}
 	//sets lowest signal strength
 	public void setMinStrength(double minStrength) {
 		this.minStrength = minStrength;
