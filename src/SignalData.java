@@ -9,12 +9,12 @@ public class SignalData {
 	//data
 	private Vector<Integer> signalStrength = new Vector <Integer>(50);
 	private Integer currentStrength,
-	minStrength = 30000, //high number
-	maxStrength = 0; 
+	maxStrength = -30000, //low number
+	minStrength = 30000; 
 	private Double avgStrength = 0.0;
 	private int packetCount;
 	private String serialNumber;
-	DecimalFormat dformat = new DecimalFormat("#.##");
+	DecimalFormat dformat = new DecimalFormat("#.###");
 	
 	
 	
@@ -42,39 +42,46 @@ public class SignalData {
 		Iterator itr = signalStrength.iterator();
 		Integer nextItem, sum = 0;
 		int size = signalStrength.size();
-		while(itr.hasNext()){
-			nextItem = (Integer) itr.next();
-			sum += nextItem;
+		//if there has been no deviation, we dont need to go through the while loop
+		if(this.minStrength == this.maxStrength){
+			
+			this.avgStrength = Double.valueOf(dformat.format(this.minStrength));
+		}
+		else{
+			while(itr.hasNext()){
+				nextItem = (Integer) itr.next();
+				sum += nextItem;
+			}
+			this.avgStrength= Double.valueOf(dformat.format((-1*((double)sum/(double)size))));		
+
 		}
 		
-		
-		this.avgStrength= Double.valueOf(dformat.format((double)sum/size));		
 	}
 	public double getAvg() {
 		return  avgStrength;
 	}
 	
 	public void addToSignal(int rssi){
-		signalStrength.add(rssi);		
+		this.signalStrength.add(rssi);		
 	}
 	
 	public void updateMinMax(Integer signalValue){
-		if(signalValue > this.maxStrength){
-			this.maxStrength = signalValue;	
+		if(-1*signalValue < this.minStrength){
+			this.minStrength = -1*signalValue;	
 		}
-		if(signalValue < this.minStrength){
-			this.minStrength = signalValue;
+		if(-1*signalValue > this.maxStrength){
+			this.maxStrength = -1*signalValue;
 		}
 	}
 
 	//Gets current signal Strength
-	public double getCurrentStrength() {
+	public Integer getCurrentStrength() {
 		return currentStrength;
 	}
 
 	//sets current signal strength
 	public void setCurrentStrength(Integer currentStrength) {
-		this.currentStrength = currentStrength;
+		this.currentStrength = -1*currentStrength;
 	}
 
 	//gets lowest signal Strength

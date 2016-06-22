@@ -19,7 +19,7 @@ public class SignalSection extends JPanel{
 		ActionListener al=new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				timeCount++;
-				timerField.setText(String.valueOf(timeCount));
+				timerField.setText(String.valueOf(timeCount)+" Seconds");
 			}
 		};
 		
@@ -34,19 +34,19 @@ public class SignalSection extends JPanel{
 		this.serialNumValue.setBounds(100,20,165,25);
 		this.serialNumValue.setHorizontalTextPosition(SwingConstants.CENTER);
 		
-		this.currentNumValue = new JLabel(String.valueOf(current));
+		this.currentNumValue = new JLabel(String.valueOf(current)+" dBm");
 		this.currentNumValue.setBounds(10,50,80,25);		
 		this.currentNumValue.setHorizontalTextPosition(SwingConstants.CENTER);
 		
-		this.minNumValue = new JLabel(String.valueOf(min));
+		this.minNumValue = new JLabel(String.valueOf(min)+" dBm");
 		this.minNumValue.setBounds(10,50,80,25);
 		this.minNumValue.setHorizontalTextPosition(SwingConstants.CENTER);
 		
-		this.maxNumValue = new JLabel(String.valueOf(max));
+		this.maxNumValue = new JLabel(String.valueOf(max)+" dBm");
 		this.maxNumValue.setBounds(10,50,80,25);
 		this.maxNumValue.setHorizontalTextPosition(SwingConstants.CENTER);
 		
-		this.avgNumValue = new JLabel(String.valueOf(avg));
+		this.avgNumValue = new JLabel(String.valueOf(avg)+" dBm");
 		this.avgNumValue.setBounds(10,50,80,25);
 		this.avgNumValue.setHorizontalTextPosition(SwingConstants.CENTER);
 		
@@ -77,13 +77,13 @@ public class SignalSection extends JPanel{
 	
 	
 	public void updateValues(String serialNumber, Double avg, Integer min, Integer max, Integer current, Integer pCount) {
-		this.currentNumValue.setText(String.valueOf(current));
-		this.minNumValue.setText(String.valueOf(min));
-		this.maxNumValue.setText(String.valueOf(max));
-		this.avgNumValue.setText(String.valueOf(avg));
+		this.currentNumValue.setText(String.valueOf(current)+" dBm");
+		this.minNumValue.setText(String.valueOf(min)+" dBm");
+		this.maxNumValue.setText(String.valueOf(max)+" dBm");
+		this.avgNumValue.setText(String.valueOf(avg)+" dBm");
 		this.packetCount.setText(String.valueOf(pCount));
 		this.timeCount = 0;
-		this.timerField.setText("0");
+		this.timerField.setText("0 Seconds");
 		this.timer.restart();
 	}
 }

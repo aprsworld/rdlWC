@@ -28,16 +28,16 @@ public class SignalReadingsPanel{
 		JLabel serialLabel = new JLabel("Serial Number");
 		serialLabel.setHorizontalTextPosition(SwingConstants.CENTER);
 
-		JLabel currentLabel = new JLabel("Current Reading");
+		JLabel currentLabel = new JLabel("Current RSSI");
 		currentLabel.setHorizontalTextPosition(SwingConstants.CENTER);
 
-		JLabel minLabel = new JLabel("Minimum Reading");
+		JLabel minLabel = new JLabel("Minimum RSSI");
 		minLabel.setHorizontalTextPosition(SwingConstants.CENTER);
 
-		JLabel maxLabel = new JLabel("Maximum Reading");
+		JLabel maxLabel = new JLabel("Maximum RSSI");
 		maxLabel.setHorizontalTextPosition(SwingConstants.CENTER);
 
-		JLabel avgLabel = new JLabel("Average Reading");
+		JLabel avgLabel = new JLabel("Average RSSI");
 		avgLabel.setHorizontalTextPosition(SwingConstants.CENTER);
 
 		JLabel pCount = new JLabel("Packet Count");
@@ -60,33 +60,7 @@ public class SignalReadingsPanel{
 	
 	
 	public void createSection(String serialNumber, Double avg, Integer min, Integer max, Integer current) {
-		/*JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(0,5));	
 		
-		JLabel serialNumValue = new JLabel(serialNumber);
-		serialNumValue.setBounds(100,20,165,25);
-		
-		JLabel currentNumValue = new JLabel(String.valueOf(current));
-		currentNumValue.setBounds(10,50,80,25);		
-		
-		JLabel minNumValue = new JLabel(String.valueOf(min));
-		minNumValue.setBounds(10,50,80,25);
-		
-		JLabel maxNumValue = new JLabel(String.valueOf(max));
-		maxNumValue.setBounds(10,50,80,25);
-		
-		JLabel avgNumValue = new JLabel(String.valueOf(avg));
-		avgNumValue.setBounds(10,50,80,25);
-		
-		panel.add(serialNumValue);
-		
-		panel.add(currentNumValue);
-		
-		panel.add(minNumValue);
-		
-		panel.add(maxNumValue);
-
-		panel.add(avgNumValue);*/
 		
 		SignalSection panel = new SignalSection(serialNumber,avg,min,max,current);
 		this.frameList.add(panel);

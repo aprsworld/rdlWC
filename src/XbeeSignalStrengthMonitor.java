@@ -79,8 +79,9 @@ public class XbeeSignalStrengthMonitor extends Thread implements PacketListener 
 			newSerial.setSerialNumber(packet.serial_prefix+ "" + packet.serial_number);
 			newSerial.setCurrentStrength(rssi);
 			newSerial.addToSignal(rssi);
-			newSerial.updateAvg();
 			newSerial.updateMinMax(rssi);
+			newSerial.updateAvg();
+
 			newSerial.incPacketCount();
 			
 			//add serial number to our list of serial numbers
@@ -90,7 +91,7 @@ public class XbeeSignalStrengthMonitor extends Thread implements PacketListener 
 			System.out.println(rssi);
 			System.out.println("if");
 			
-			signalPanel.createSection(packet.serial_prefix+ "" + packet.serial_number, newSerial.getAvg(), newSerial.getMinStrength(), newSerial.getMaxStrength(), rssi);
+			signalPanel.createSection(packet.serial_prefix+ "" + packet.serial_number, newSerial.getAvg(), newSerial.getMinStrength(), newSerial.getMaxStrength(), newSerial.getCurrentStrength());
 
 		}
 		//if we have already seen this serial number, update its data
@@ -99,10 +100,11 @@ public class XbeeSignalStrengthMonitor extends Thread implements PacketListener 
 				if(n.getSerialNumber().equals(packet.serial_prefix+ "" + packet.serial_number)){
 					n.setCurrentStrength(rssi);
 					n.addToSignal(rssi);
-					n.updateAvg();
 					n.updateMinMax(rssi);
 					n.incPacketCount();
-					signalPanel.updateSection(n.getSerialNumber(), n.getAvg(), n.getMinStrength(), n.getMaxStrength(), rssi, n.getPacketCount());
+					n.updateAvg();
+
+					signalPanel.updateSection(n.getSerialNumber(), n.getAvg(), n.getMinStrength(), n.getMaxStrength(), n.getCurrentStrength(), n.getPacketCount());
 
 				}
 			}
