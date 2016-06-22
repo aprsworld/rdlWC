@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
+//The main container class for the GUI. This class instantiates SignalSection.java for every RDLogger that is detected.
 public class SignalReadingsPanel{
 	private JFrame frame;
 	protected ArrayList<SignalSection> frameList = new ArrayList<SignalSection>();
@@ -58,7 +59,7 @@ public class SignalReadingsPanel{
 		frame.add(labelPanel);
 	}
 	
-	
+	//instantiates a signalsection class and gives it values to display
 	public void createSection(String serialNumber, Double avg, Integer min, Integer max, Integer current) {
 		
 		
@@ -68,6 +69,7 @@ public class SignalReadingsPanel{
 		frame.validate();
 	}
 	
+	//searches the list of objects for the object containing the station ID and then updates its values
 	public void updateSection(String serialNumber, Double avg, Integer min, Integer max, Integer current, Integer packetCount) {
 		for(SignalSection n : this.frameList){
 			if((n.id).equals(serialNumber)){

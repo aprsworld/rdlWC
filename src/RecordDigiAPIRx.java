@@ -1,4 +1,6 @@
 
+
+//parses API packets and seperates data from the source, rssi, and options.
 public class RecordDigiAPIRx {
 	public int source, rssi, options;
     public String data;

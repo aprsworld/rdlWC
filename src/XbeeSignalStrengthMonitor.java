@@ -3,8 +3,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
+/* This class receives packets from the worlddatapacket class and uses the data to update the object that represents each rdlogger
+ * It then passes the data from the object to the GUI class which updates accordingly
+*/
 public class XbeeSignalStrengthMonitor extends Thread implements PacketListener  {
 	RecordDigiAPIRx packetParser = new RecordDigiAPIRx();
 	SignalData signalData = new SignalData();
@@ -42,17 +43,7 @@ public class XbeeSignalStrengthMonitor extends Thread implements PacketListener 
 	
 	
 	public static void main(String args[]) {
-		/*String ini = null;
-
-		if (args.length == 1) {
-			ini = args[0];
-		} else {
-			System.err.println("Usage: java RDLUniversalDownload inifile");
-			System.err
-					.println("Invoke with -Dswing.aatext=true for anti-aliased fonts");
-
-			ini = "config_default.ini";
-		}*/
+		
 
 		SerialIOInstall.installSerialIO();
 		
@@ -89,7 +80,6 @@ public class XbeeSignalStrengthMonitor extends Thread implements PacketListener 
 			//add signal data to our list of signal data
 			listSignalData.add(newSerial);
 			System.out.println(rssi);
-			System.out.println("if");
 			
 			signalPanel.createSection(packet.serial_prefix+ "" + packet.serial_number, newSerial.getAvg(), newSerial.getMinStrength(), newSerial.getMaxStrength(), newSerial.getCurrentStrength());
 
@@ -108,6 +98,7 @@ public class XbeeSignalStrengthMonitor extends Thread implements PacketListener 
 
 				}
 			}
+			//Debug list contents
 			/*for(SignalData n : listSignalData){
 				if(n.getSerialNumber().equals(packet.serial_prefix+ "" + packet.serial_number)){
 					System.out.println("Serial Number = "+n.getSerialNumber()+" avg = "+n.getAvg()+" min = "+
@@ -117,10 +108,8 @@ public class XbeeSignalStrengthMonitor extends Thread implements PacketListener 
 				}
 			}*/
 			System.out.println(packet.getRSSI());
-			System.out.println("else if");
 		}
 		else{
-			System.out.println("else");
 
 			//do nothing - wrong serial prefix most likely
 		}

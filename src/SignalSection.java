@@ -6,6 +6,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+
+//this is the class that represents the RDLogger signal data on the GUI
 public class SignalSection extends JPanel{
 
 	private static final long serialVersionUID = 1L;
@@ -13,6 +15,7 @@ public class SignalSection extends JPanel{
 	protected String id;
 	protected Integer timeCount = 0;
 	protected Timer timer;
+	
 	public SignalSection(String serialNumber, Double avg, Integer min, Integer max, Integer current){
 		this.setLayout(new GridLayout(0,7));
 		
