@@ -13,6 +13,10 @@ public class RDLUniversalReader implements SerialPortEventListener {
 	long lastCharacter;
 	RecordDigiAPIRx packetParser = new RecordDigiAPIRx();
 	
+	public void writeCmd(){
+	
+	}
+	
 	public void sendPacket(int buff[]) {
 		byte[] ba=new byte[buff.length];
 
@@ -184,11 +188,14 @@ public class RDLUniversalReader implements SerialPortEventListener {
 		//				System.err.flush();
 
 		buff.add(c);
-		System.err.print("#  this process :"+ thisProcess);
-		if(thisProcess == "xbeeSignalStrength"){
+		if(thisProcess == "xbeeSignalStrength" && thisProcess != null){
+			
+
 			tryApiPacket();
 		}
 		else{
+		
+
 			tryPacket();
 		}
 
