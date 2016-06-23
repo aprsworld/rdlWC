@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
+import javax.swing.SwingConstants;
 
 public class RDLUniversalDownload extends Thread implements PacketListener {
 	protected List<String> listSerialNumbers = new ArrayList<String>();
@@ -572,14 +573,22 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 
 		/* title text and photo */
 		Container titleContainer = new Container();
-		titleContainer.setLayout(new FlowLayout());
+		titleContainer.setLayout(new GridLayout(2,1));
 
 		JLabel titleLabel = new JLabel(
 				"For manufacturer's support please contact APRS World, LLC at +1-507-454-2727 or info@aprsworld.com");
 		titleLabel.setFont(new Font("Serif", Font.BOLD, 18));
 		titleLabel.setForeground(Color.blue);
+		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		JLabel wifiLabel = new JLabel("Disable WI-FI before Downloading data"
+				
+				);
+		wifiLabel.setFont(new Font("Serif", Font.BOLD, 18));
+		wifiLabel.setForeground(Color.red);
+		wifiLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		titleContainer.add(titleLabel);
-
+		titleContainer.add(wifiLabel);
+		
 		/* add the title */
 		cont.add(titleContainer, BorderLayout.PAGE_START);
 
