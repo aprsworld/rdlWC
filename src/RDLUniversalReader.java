@@ -11,7 +11,8 @@ public class RDLUniversalReader implements SerialPortEventListener {
 	String thisProcess = null;
 	Vector<Integer> buff;
 	long lastCharacter;
-	RecordDigiAPIRx packetParser; 
+	RecordDigiAPIRx packetParser = new RecordDigiAPIRx();
+
 	
 	public void writeCmd(){
 	
@@ -250,7 +251,6 @@ public class RDLUniversalReader implements SerialPortEventListener {
 		lengthLoc = packetLength;
 		thisProcess = "xbeeSignalStrength";
 		link = new LinkSerial(spName,spSpeed);
-		packetParser = new RecordDigiAPIRx();
 
 		if ( null == link || false == link.Connect()) {
 			System.err.println("# Error establishing serial link to device");
