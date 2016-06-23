@@ -3,7 +3,9 @@ import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.Vector;
 
+/* This class is for storing and manipulating data for the signal monitor
 
+*/
 public class SignalData {
 	
 	//data

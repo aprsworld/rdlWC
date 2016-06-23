@@ -11,7 +11,7 @@ public class RDLUniversalReader implements SerialPortEventListener {
 	String thisProcess = null;
 	Vector<Integer> buff;
 	long lastCharacter;
-	RecordDigiAPIRx packetParser = new RecordDigiAPIRx();
+	RecordDigiAPIRx packetParser; 
 	
 	public void writeCmd(){
 	
@@ -117,8 +117,7 @@ public class RDLUniversalReader implements SerialPortEventListener {
 		//System.err.printf("trypacket","got here");
 		if ( buff.size() >= 6 ) {
 			/* try our CRC */
-			int rLength = buff.elementAt(lengthLoc);
-								System.err.println("# rLength=" + rLength);
+			int rLength = buff.elementAt(4);
 			if ( buff.size() == rLength ) {
 				//				System.err.println("# we have the right length = " + buff.size() );
 				int rCRC = (buff.elementAt(rLength-2)<<8) + buff.elementAt(rLength-1);
@@ -184,7 +183,7 @@ public class RDLUniversalReader implements SerialPortEventListener {
 		}
 		lastCharacter=now;
 
-						System.err.printf("# rx'ed: %03d 0x%02x (buff.size()=%d age=%d)\n", c, c, buff.size(),age);
+						//System.err.printf("# rx'ed: %03d 0x%02x (buff.size()=%d age=%d)\n", c, c, buff.size(),age);
 		//				System.err.flush();
 
 		buff.add(c);
@@ -251,6 +250,7 @@ public class RDLUniversalReader implements SerialPortEventListener {
 		lengthLoc = packetLength;
 		thisProcess = "xbeeSignalStrength";
 		link = new LinkSerial(spName,spSpeed);
+		packetParser = new RecordDigiAPIRx();
 
 		if ( null == link || false == link.Connect()) {
 			System.err.println("# Error establishing serial link to device");

@@ -25,13 +25,16 @@ public class XbeeSignalStrengthMonitor extends Thread implements PacketListener 
 	}
 		
 	public void run() {
+		ini = new IniFile("config_default.ini");
+
+		
 		String serialPort;
 		int serialSpeed;
 		
 		System.out.println("setting com settings");
-		serialPort = "COM4";//ini.getValueSafe("SERIAL", "port", "COM1");
-		serialSpeed = Integer.parseInt("57600");//Integer.parseInt(ini.getValueSafe("SERIAL", "speed",
-				//"57600"));
+		serialPort = ini.getValueSafe("SERIAL", "port", "COM4");
+		serialSpeed = Integer.parseInt(ini.getValueSafe("SERIAL", "speed",
+				"57600"));
 		System.err.println("# Opening " + serialPort + " @ " + serialSpeed);
 
 		
@@ -44,8 +47,8 @@ public class XbeeSignalStrengthMonitor extends Thread implements PacketListener 
 	
 	public static void main(String args[]) {
 		
-
 		SerialIOInstall.installSerialIO();
+		
 		
 		(new XbeeSignalStrengthMonitor()).start();
 		

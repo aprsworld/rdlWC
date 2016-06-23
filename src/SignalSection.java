@@ -35,31 +35,31 @@ public class SignalSection extends JPanel{
 	
 		this.serialNumValue = new JLabel(serialNumber);
 		this.serialNumValue.setBounds(100,20,165,25);
-		this.serialNumValue.setHorizontalTextPosition(SwingConstants.CENTER);
+		this.serialNumValue.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		this.currentNumValue = new JLabel(String.valueOf(current)+" dBm");
 		this.currentNumValue.setBounds(10,50,80,25);		
-		this.currentNumValue.setHorizontalTextPosition(SwingConstants.CENTER);
+		this.currentNumValue.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		this.minNumValue = new JLabel(String.valueOf(min)+" dBm");
 		this.minNumValue.setBounds(10,50,80,25);
-		this.minNumValue.setHorizontalTextPosition(SwingConstants.CENTER);
+		this.minNumValue.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		this.maxNumValue = new JLabel(String.valueOf(max)+" dBm");
 		this.maxNumValue.setBounds(10,50,80,25);
-		this.maxNumValue.setHorizontalTextPosition(SwingConstants.CENTER);
+		this.maxNumValue.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		this.avgNumValue = new JLabel(String.valueOf(avg)+" dBm");
 		this.avgNumValue.setBounds(10,50,80,25);
-		this.avgNumValue.setHorizontalTextPosition(SwingConstants.CENTER);
+		this.avgNumValue.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		this.packetCount = new JLabel("1");
 		this.packetCount.setBounds(10,50,80,25);
-		this.packetCount.setHorizontalTextPosition(SwingConstants.CENTER);
+		this.packetCount.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		this.timerField = new JLabel("1");
 		this.timerField.setBounds(10,50,80,25);
-		this.timerField.setHorizontalTextPosition(SwingConstants.CENTER);
+		this.timerField.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		this.add(serialNumValue);
 		
