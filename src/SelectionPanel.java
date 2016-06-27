@@ -29,7 +29,7 @@ public class SelectionPanel {
 		pDownload = pd;
 		rdl = rd;
 	}
-
+ 
 	public void showGUI() {
 
 		frame = new JFrame("Select your Serial Number");
