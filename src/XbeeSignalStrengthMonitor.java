@@ -9,7 +9,7 @@ import java.util.List;
 public class XbeeSignalStrengthMonitor extends Thread implements PacketListener  {
 	RecordDigiAPIRx packetParser = new RecordDigiAPIRx();
 	SignalData signalData = new SignalData();
-	SignalReadingsPanel signalPanel = new SignalReadingsPanel();
+	SignalReadingsPanel signalPanel;
 
 	boolean started = true;
 	
@@ -41,7 +41,7 @@ public class XbeeSignalStrengthMonitor extends Thread implements PacketListener 
 		
 		RDLUniversalReader remote = new RDLUniversalReader(serialPort, serialSpeed, 2);
 		remote.addPacketListener(this);
-
+		signalPanel = new SignalReadingsPanel();
 	}
 	
 	
