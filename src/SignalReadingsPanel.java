@@ -1,12 +1,14 @@
 
 
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 //The main container class for the GUI. This class instantiates SignalSection.java for every RDLogger that is detected.
 public class SignalReadingsPanel{

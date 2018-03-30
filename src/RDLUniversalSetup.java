@@ -4,12 +4,6 @@ import javax.comm.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import javax.swing.*;
 import java.util.Enumeration;
 import java.util.Vector;

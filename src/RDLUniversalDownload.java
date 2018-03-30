@@ -1,7 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -47,7 +46,7 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 	protected long startTime;
 	protected String[] windHistoryRecord;
 	protected LogProcess log;
-	public static final String compileDate = "2016-06-02";
+	public static final String compileDate = "2018-03-30";
 
 	public static int crc_chk(int data[], int start, int length) {
 		int j;
@@ -460,7 +459,7 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 				+ pDownload.getDownloadFileName() + "\n");
 		log.createLog(pDownload.getDownloadFileName());
 		log.writeLog(header);
-		int totalLines = 0;
+		//int totalLines = 0;
 
 		/* dump non-null records */
 		for (int i = 0; i < windHistoryRecord.length; i++) {
@@ -468,7 +467,7 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 				continue;
 
 			log.writeLog(windHistoryRecord[i] + "\r\n");
-			totalLines++;
+			//totalLines++;
 		}
 
 		log.closeLog();
@@ -502,6 +501,7 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 		windHistoryRecord = new String[4097 * 44];
 		log = new LogProcess();
 		
+		System.err.println("# java.library.path " + System.getProperty("java.library.path") );
 		serialPort = ini.getValueSafe("SERIAL", "port", "COM1");
 		serialSpeed = Integer.parseInt(ini.getValueSafe("SERIAL", "speed",
 				"57600"));
@@ -516,7 +516,15 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 		fProgress.setVisible(true);
 
 		/* actually make our remote reader */
-		remote = new RDLUniversalReader(serialPort, serialSpeed);
+		try {
+			remote = new RDLUniversalReader(serialPort, serialSpeed);
+		} catch ( Exception e ) {
+			System.err.println("# Exception while connecting to serial port: " + e);
+			System.err.println("# Giving up.");
+			fProgress.setVisible(false);
+			JOptionPane.showMessageDialog(null,"Error connecting to serial port. Try running setup and selecting the correct serial port.");
+			System.exit(1);
+		}
 		remote.addPacketListener(this);
 
 		/* make progress bar go away */
@@ -580,14 +588,12 @@ public class RDLUniversalDownload extends Thread implements PacketListener {
 		titleLabel.setFont(new Font("Serif", Font.BOLD, 18));
 		titleLabel.setForeground(Color.blue);
 		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		JLabel wifiLabel = new JLabel("Disable WI-FI before Downloading data"
-				
-				);
-		wifiLabel.setFont(new Font("Serif", Font.BOLD, 18));
-		wifiLabel.setForeground(Color.red);
-		wifiLabel.setHorizontalAlignment(SwingConstants.CENTER);
+//		JLabel wifiLabel = new JLabel("Disable WI-FI before Downloading data");
+//		wifiLabel.setFont(new Font("Serif", Font.BOLD, 18));
+//		wifiLabel.setForeground(Color.red);
+//		wifiLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		titleContainer.add(titleLabel);
-		titleContainer.add(wifiLabel);
+//		titleContainer.add(wifiLabel);
 		
 		/* add the title */
 		cont.add(titleContainer, BorderLayout.PAGE_START);
