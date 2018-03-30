@@ -4,12 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Date;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
-import org.jfree.data.time.Second;
 
 public class AnemometerBigTextPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -56,6 +54,8 @@ public class AnemometerBigTextPanel extends JPanel {
 	public AnemometerBigTextPanel(String title, String sUnits, int mAge, int fontSizeBig, int fontSizeLabel) {
 		super(new GridLayout(0,4)); /* 4 columns wide */
 
+		System.out.println("fontSizeBig=" + fontSizeBig + " fontSizeLabel=" + fontSizeLabel);
+		
 		age=0;
 		
 		speedUnits = sUnits;
