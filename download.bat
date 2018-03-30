@@ -1,1 +1,1 @@
-java -cp bin;Serialio.jar;jspComm.jar;. RDLoggerLivePCDisplay config_default.ini
+java -cp bin;Serialio.jar;jspComm.jar;. RDLUniversalDownload config_default.ini
