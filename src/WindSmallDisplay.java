@@ -16,7 +16,7 @@ public class WindSmallDisplay {
 
 	protected JLabel titleLabel;
 	protected String sUnits;
-	protected int fontSizeBig;
+	protected int fontSizeBig, fontSizeLabel;
 	Container content;
 	
 	protected Hashtable<String,AnemometerBigTextPanel> ap;
@@ -34,7 +34,7 @@ public class WindSmallDisplay {
 	
 	
 	protected void createAnemometerBigTextPanel(RecordRDLoggerCell rec) {
-		anemometer=new AnemometerBigTextPanel(rec.serialNumber,sUnits,maxAge,fontSizeBig);
+		anemometer=new AnemometerBigTextPanel(rec.serialNumber,sUnits,maxAge,fontSizeBig,fontSizeLabel);
 		content.add(anemometer);
 		
 		ap.put(rec.serialNumber, anemometer);
@@ -69,6 +69,7 @@ public class WindSmallDisplay {
 	protected void readIni(IniFile ini) {
 		maxAge=Integer.parseInt(ini.getValueSafe("GUI","staleSeconds","25"));
 		fontSizeBig=Integer.parseInt(ini.getValueSafe("GUI","fontSizeBig","48"));
+		fontSizeLabel=Integer.parseInt(ini.getValueSafe("GUI","fontSizeLabel","24"));
 		sUnits=ini.getValueSafe("ANEMOMETER","anemo_u","m/s");
 	}
 	
