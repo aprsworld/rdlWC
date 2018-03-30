@@ -104,6 +104,29 @@ public class LinkSerial {
 		}
 	}
 	
+	public int[] getRawPacket(char startsWith, int len) {
+		int [] buff=new int[len];
+		int n;
+		
+		try {
+			while ( startsWith != i.read() ) {
+			}
+			
+			buff[0]=startsWith;
+			
+			for ( n=1 ; n<len ; n++ ) {
+				buff[n]=i.read();
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+		return buff;
+	}
+	
 	public String getLine() {
 		String line;
 
