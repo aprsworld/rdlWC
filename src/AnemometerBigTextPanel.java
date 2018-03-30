@@ -54,7 +54,6 @@ public class AnemometerBigTextPanel extends JPanel {
 	public AnemometerBigTextPanel(String title, String sUnits, int mAge, int fontSizeBig, int fontSizeLabel) {
 		super(new GridLayout(0,4)); /* 4 columns wide */
 
-		System.out.println("fontSizeBig=" + fontSizeBig + " fontSizeLabel=" + fontSizeLabel);
 		
 		age=0;
 		
