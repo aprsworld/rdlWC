@@ -36,7 +36,7 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 				calendar.get(Calendar.MONTH) + 1,
 				calendar.get(Calendar.DAY_OF_MONTH)
 		);
-		System.err.println("# log() generated filename: " + filename);
+		//System.err.println("# log() generated filename: " + filename);
 	
 		String csv=String.format("%04d-%02d-%02d %02d:%02d:%02d, %s, %2.1f, %2.1f, %d, %d, %d, %d, %d",
 				calendar.get(Calendar.YEAR),
@@ -60,7 +60,7 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 		
 		LogProcess log = new LogProcess(false);
 		log.createLog(filename);
-		log.writeLog(csv + "\n");
+		log.writeLog(csv + System.getProperty("line.separator"));
 		log.closeLog();
 	}
 	
