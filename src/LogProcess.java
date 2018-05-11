@@ -6,18 +6,27 @@ import java.io.IOException;
 
 public class LogProcess {
 	protected BufferedWriter writer;
+	protected boolean messages=false;
 
 	public LogProcess() {
 		writer=null;
+	}
+	
+	public LogProcess(boolean showMessages) { 
+		this();
+		messages=showMessages;
 	}
 	
 	public void createLog(String filename) {
 		try { 
 			/* create our file */
 			writer = new BufferedWriter(new FileWriter(filename,true));
-			System.err.println("# Created log file: " + filename);
+			
+			if ( messages ) {
+				System.err.println("# Created / appended to log file: " + filename);
+			}
 		} catch ( IOException e ) {
-			System.err.println("# IO Exception while creating download file:\n" + e);
+			System.err.println("# IO Exception while creating file:\n" + e);
 		}
 	}
 	
@@ -28,7 +37,7 @@ public class LogProcess {
 		try {
 			writer.write(line);
 		} catch ( IOException e ) {
-			System.err.println("# IO Exception while closing download file:\n" + e);
+			System.err.println("# IO Exception while writing file:\n" + e);
 		}
 	}
 	
@@ -39,7 +48,7 @@ public class LogProcess {
 		try {
 			writer.close();
 		} catch ( IOException e ) {
-			System.err.println("# IO Exception while closing download file:\n" + e);
+			System.err.println("# IO Exception while closing file:\n" + e);
 		}
 	}
 }

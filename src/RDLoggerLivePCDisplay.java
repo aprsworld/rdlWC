@@ -1,5 +1,8 @@
 
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import javax.swing.JOptionPane;
 
 /* master server */
@@ -12,8 +15,53 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 	protected RDLUniversalReader remote;
 	protected RecordRDLoggerCell rLive;
 	
+	boolean debug=false;
+	
+	protected String liveLogDirectory;
+	
 	RDLoggerLivePCDisplay (String inifilename) {
 		inifile = inifilename;
+	}
+	
+	protected void log(RecordRDLoggerCell r) {
+//		System.err.println("# log() received: " + r);
+		
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(r.rxDate);
+		
+		String filename=String.format("%s/%s_%04d%02d%02d_LIVE.csv",
+				liveLogDirectory,
+				r.serialNumber,
+				calendar.get(Calendar.YEAR),
+				calendar.get(Calendar.MONTH) + 1,
+				calendar.get(Calendar.DAY_OF_MONTH)
+		);
+		System.err.println("# log() generated filename: " + filename);
+	
+		String csv=String.format("%04d-%02d-%02d %02d:%02d:%02d, %s, %2.1f, %2.1f, %d, %d, %d, %d, %d",
+				calendar.get(Calendar.YEAR),
+				calendar.get(Calendar.MONTH) + 1,
+				calendar.get(Calendar.DAY_OF_MONTH),
+				calendar.get(Calendar.HOUR_OF_DAY),
+				calendar.get(Calendar.MINUTE),
+				calendar.get(Calendar.SECOND),
+				r.serialNumber,
+				r.getWindSpeed(),
+				r.getWindGust(),
+				r.windCount,
+				r.windDirectionSector,
+				r.batteryStateOfCharge,
+				r.tPulseTime,
+				r.tPulseMinTime
+		);
+	
+		System.err.println("# log() CSV '" + csv + "'");
+	
+		
+		LogProcess log = new LogProcess(false);
+		log.createLog(filename);
+		log.writeLog(csv + "\n");
+		log.closeLog();
 	}
 	
 	public void packetReceived(WorldDataPacket packet) {
@@ -26,10 +74,12 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 //			System.err.printf("# packet[%d] 0x%02X\n", i,packet.data[i]);
 //		}
 		
-		System.err.printf("# serial prefix: %c\n",packet.serial_prefix);
-		System.err.printf("# serial number: %d\n",packet.serial_number);
-		System.err.printf("# packet length: %d\n",packet.length);
-		System.err.printf("#   packet type: %d\n",packet.type);
+		if ( debug ) {
+			System.err.printf("# serial prefix: %c\n",packet.serial_prefix);
+			System.err.printf("# serial number: %d\n",packet.serial_number);
+			System.err.printf("# packet length: %d\n",packet.length);
+			System.err.printf("#   packet type: %d\n",packet.type);
+		}
 		
 		
 		
@@ -37,15 +87,21 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 			/* rdLoggerCell live packet */
 			
 			String serial = packet.serial_prefix + Integer.toString(packet.serial_number);
-			System.err.println("# rdLoggerLive packet serial number = '" + serial + "'");
+//			System.out.println("# rdLoggerLive packet serial number = '" + serial + "'");
 			
 	
 			RecordRDLoggerCell r = new RecordRDLoggerCell();
 			r.parseRecord(packet.data);
-			System.err.println("# decoded: " + r.toString());
+			System.out.println("# decoded: " + r.toString());
+			System.out.flush();
 			
 			if ( null != disp ) {
 				disp.updateDisplay(r);
+			}
+			
+			/* log if we have something that appears to be a directory */
+			if ( 0 != liveLogDirectory.compareTo("") ) {
+				log(r);
 			}
 			
 		}
@@ -73,6 +129,14 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 		serialPort = ini.getValueSafe("SERIAL", "port", "COM1");
 		serialSpeed = Integer.parseInt(ini.getValueSafe("SERIAL", "speed", "57600"));
 		System.err.println("# Opening " + serialPort + " @ " + serialSpeed);
+		
+		liveLogDirectory = ini.getValueSafe("LIVELOG","directory","");
+		if ( 0 == liveLogDirectory.compareTo("") ) {
+			System.err.println("# Logging of live data disabled because [LIVELOG] directory is null");
+		} else { 
+			System.err.println("# Live data logging directory `" + liveLogDirectory + "`");
+		}
+		
 		
 		/* actually make our remote reader */
 		try {

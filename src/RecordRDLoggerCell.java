@@ -121,12 +121,13 @@ public class RecordRDLoggerCell {
 			/* remote CRC */
 			i = (buff[13] << 8) + buff[14];
 			rCRC=i;
+//			System.err.println("rCRC=" + rCRC);
 			lCRC=crc_chk(buff,1,12);
 		}
 	}	
 	
 	public String toString() {
 		return "rdLoggerCell serial=" + serialNumber + " tWindSpeed=" + tPulseTime + " tWindGust=" + tPulseMinTime + " batteryStateOfCharge=" + batteryStateOfCharge + 
-			" windDirectionSector=" + windDirectionSector;
+			" windDirectionSector=" + windDirectionSector + " rCRC=0x" + Integer.toHexString(rCRC).toUpperCase();
 	}
 }
