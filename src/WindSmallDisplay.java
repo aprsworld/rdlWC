@@ -33,11 +33,11 @@ public class WindSmallDisplay {
 	}
 	
 	
-	protected void createAnemometerBigTextPanel(RecordRDLoggerCell rec) {
-		anemometer=new AnemometerBigTextPanel(rec.serialNumber,sUnits,maxAge,fontSizeBig,fontSizeLabel);
+	protected void createAnemometerBigTextPanel(String serialNumber) {
+		anemometer=new AnemometerBigTextPanel(serialNumber,sUnits,maxAge,fontSizeBig,fontSizeLabel);
 		content.add(anemometer);
 		
-		ap.put(rec.serialNumber, anemometer);
+		ap.put(serialNumber, anemometer);
 	}
 
 	public void updateDisplay(RecordRDLoggerCell rec) {
@@ -51,13 +51,13 @@ public class WindSmallDisplay {
 		AnemometerBigTextPanel a = ap.get(rec.serialNumber);
 		if ( null == a ) {
 			/* create the object and setup the GUI */
-			createAnemometerBigTextPanel(rec);
+			createAnemometerBigTextPanel(rec.serialNumber);
 			/* now access it */
 			a = ap.get(rec.serialNumber);
 		}
 		
 		/* update the anemometer panel with current wind speed and gust */
-		a.setWind(rec.getWindSpeed(),rec.getWindGust());
+		a.setWind(rec.getWindSpeed(),rec.getWindGust(),0,0,0);
 
 		recordDate=rec.rxDate;
 		updateStatus();
@@ -130,5 +130,34 @@ public class WindSmallDisplay {
 			}
 		});
 
+	}
+
+
+	public void updateDisplayFull(RecordRDLoggerCellFull rec) {
+			/* timer for updating the status bar */
+			if ( ! timer.isRunning() ) {
+				timer.start();
+			}
+
+
+			/* find our anemometer panel in ap by serial number or create if needed */
+			AnemometerBigTextPanel a = ap.get(rec.serialNumber);
+			if ( null == a ) {
+				/* create the object and setup the GUI */
+				createAnemometerBigTextPanel(rec.serialNumber);
+				/* now access it */
+				a = ap.get(rec.serialNumber);
+			}
+			
+			/* update the anemometer panel with current wind speed and gust */
+			a.setWind(rec.getWindSpeed0(),rec.getWindGust0(),rec.getWindDirectionFromAnalog0(),rec.getPitchFromAnalog1(),rec.getRollFromAnalog1());
+
+			recordDate=rec.rxDate;
+			updateStatus();
+
+			
+			f.repaint();
+		
+		
 	}
 }

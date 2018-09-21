@@ -13,6 +13,9 @@ public class AnemometerBigTextPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	protected JLabel windSpeed;
 	protected JLabel windGust;
+	protected JLabel windDirection;
+	protected JLabel pitch;
+	protected JLabel roll;
 	protected JLabel windAge;
 	protected String speedUnits;
 	protected javax.swing.Timer timer;
@@ -29,13 +32,16 @@ public class AnemometerBigTextPanel extends JPanel {
 		}
 	}
 	
-	public void setWind(double ws, double wg) {
+	public void setWind(double ws, double wg, int wd, int p, int r) {
 
 		
 		NumberFormat f = new DecimalFormat("0.0");
 
 		windSpeed.setText(f.format(ws) + " " + speedUnits);
 		windGust.setText(f.format(wg) + " " + speedUnits);
+		windDirection.setText( wd + "\u00b0");
+		pitch.setText( p + "\u00b0");
+		roll.setText( r + "\u00b0");
 
 		/* restart age count */
 		windAge.setText("0 sec");
@@ -52,7 +58,7 @@ public class AnemometerBigTextPanel extends JPanel {
 	
 
 	public AnemometerBigTextPanel(String title, String sUnits, int mAge, int fontSizeBig, int fontSizeLabel) {
-		super(new GridLayout(0,4)); /* 4 columns wide */
+		super(new GridLayout(0,7)); /* 7 columns wide */
 
 		
 		age=0;
@@ -80,6 +86,22 @@ public class AnemometerBigTextPanel extends JPanel {
 		windGust.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
 		windGust.setForeground(Color.BLACK);
 		
+		windDirection = new JLabel("",SwingConstants.CENTER);
+		windDirection.setBorder(BorderFactory.createTitledBorder(null,"Wind Direction",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
+		windDirection.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
+		windDirection.setForeground(Color.BLACK);
+
+		pitch = new JLabel("",SwingConstants.CENTER);
+		pitch.setBorder(BorderFactory.createTitledBorder(null,"Pitch",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
+		pitch.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
+		pitch.setForeground(Color.BLACK);
+
+		roll = new JLabel("",SwingConstants.CENTER);
+		roll.setBorder(BorderFactory.createTitledBorder(null,"Roll",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
+		roll.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
+		roll.setForeground(Color.BLACK);
+		
+		
 		windAge = new JLabel("",SwingConstants.CENTER);
 		windAge.setBorder(BorderFactory.createTitledBorder(null,"Data Age",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
 		windAge.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
@@ -87,6 +109,9 @@ public class AnemometerBigTextPanel extends JPanel {
 
 		add(windSpeed);
 		add(windGust);
+		add(windDirection);
+		add(pitch);
+		add(roll);
 		add(windAge);
 		
 		/* add a timer to keep our status bar updated */

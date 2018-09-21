@@ -104,6 +104,31 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 				log(r);
 			}
 			
+		} if ( 36 == packet.type ) {
+			/* rdLoggerCellFull live packet */
+			
+			String serial = packet.serial_prefix + Integer.toString(packet.serial_number);
+//			System.out.println("# rdLoggerLive packet serial number = '" + serial + "'");
+			
+	
+			RecordRDLoggerCellFull r = new RecordRDLoggerCellFull();
+			r.parseRecord(packet.data);
+			System.out.println("# decoded: " + r.toString());
+			System.out.flush();
+			
+			System.out.println("# wind direction=" + r.getWindDirectionFromAnalog0());
+			System.out.println("#          pitch=" + r.getPitchFromAnalog1());
+			System.out.println("#           roll=" + r.getRollFromAnalog1());
+			
+			if ( null != disp ) {
+				disp.updateDisplayFull(r);
+			}
+			
+			/* log if we have something that appears to be a directory */
+			if ( 0 != liveLogDirectory.compareTo("") ) {
+//				logFull(r);
+			}
+			
 		}
 		
 		
