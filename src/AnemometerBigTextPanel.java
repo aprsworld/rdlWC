@@ -58,7 +58,8 @@ public class AnemometerBigTextPanel extends JPanel {
 	
 
 	public AnemometerBigTextPanel(String title, String sUnits, int mAge, int fontSizeBig, int fontSizeLabel) {
-		super(new GridLayout(0,7)); /* 7 columns wide */
+		// super(new GridLayout(0,7)); /* 7 columns wide */
+		super(new GridLayout(0,5)); /* 5 columns wide */
 
 		
 		age=0;
@@ -110,8 +111,8 @@ public class AnemometerBigTextPanel extends JPanel {
 		add(windSpeed);
 		add(windGust);
 		add(windDirection);
-		add(pitch);
-		add(roll);
+//		add(pitch);
+//		add(roll);
 		add(windAge);
 		
 		/* add a timer to keep our status bar updated */

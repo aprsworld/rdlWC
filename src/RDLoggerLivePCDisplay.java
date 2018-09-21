@@ -23,6 +23,50 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 		inifile = inifilename;
 	}
 	
+	protected void logFull(RecordRDLoggerCellFull r) {
+//		System.err.println("# logFull() received: " + r);
+		
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(r.rxDate);
+		
+		String filename=String.format("%s/%s_%04d%02d%02d_LIVE.csv",
+				liveLogDirectory,
+				r.serialNumber,
+				calendar.get(Calendar.YEAR),
+				calendar.get(Calendar.MONTH) + 1,
+				calendar.get(Calendar.DAY_OF_MONTH)
+		);
+		//System.err.println("# log() generated filename: " + filename);
+	
+		String csv=String.format("%04d-%02d-%02d %02d:%02d:%02d, %s, %2.1f, %2.1f, %d, %d, %d, %d, %d, %d, %d, %d",
+				calendar.get(Calendar.YEAR),
+				calendar.get(Calendar.MONTH) + 1,
+				calendar.get(Calendar.DAY_OF_MONTH),
+				calendar.get(Calendar.HOUR_OF_DAY),
+				calendar.get(Calendar.MINUTE),
+				calendar.get(Calendar.SECOND),
+				r.serialNumber,
+				r.getWindSpeed0(),
+				r.getWindGust0(),
+				r.windCount0,
+				-1, // r.windDirectionSector,
+				-1, // r.batteryStateOfCharge,
+				r.tPulseTime0,
+				r.tPulseMinTime0,
+				r.getWindDirectionFromAnalog0(),
+				r.getPitchFromAnalog1(),
+				r.getRollFromAnalog1()
+		);
+	
+		System.err.println("# log() CSV '" + csv + "'");
+	
+		
+		LogProcess log = new LogProcess(false);
+		log.createLog(filename);
+		log.writeLog(csv + System.getProperty("line.separator"));
+		log.closeLog();
+	}
+
 	protected void log(RecordRDLoggerCell r) {
 //		System.err.println("# log() received: " + r);
 		
@@ -63,6 +107,7 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 		log.writeLog(csv + System.getProperty("line.separator"));
 		log.closeLog();
 	}
+
 	
 	public void packetReceived(WorldDataPacket packet) {
 
@@ -126,7 +171,7 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 			
 			/* log if we have something that appears to be a directory */
 			if ( 0 != liveLogDirectory.compareTo("") ) {
-//				logFull(r);
+				logFull(r);
 			}
 			
 		}
