@@ -16,6 +16,8 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 
 	protected RDLUniversalReader remote;
 	protected RecordRDLoggerCell rLive;
+	
+	protected int tableAngle;
 
 	boolean debug=false;
 
@@ -23,6 +25,46 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 
 	RDLoggerLivePCDisplay (String inifilename) {
 		inifile = inifilename;
+		tableAngle=-1;
+	}
+	
+	protected void setTableAngle(int degrees) {
+		String serialPort = ini.getValueSafe("TURNTABLE", "serial_port", "COM1");
+		int serialSpeed = Integer.parseInt(ini.getValueSafe("TURNTABLE", "speed", "57600"));
+		int feed = Integer.parseInt(ini.getValueSafe("TURNTABLE", "feed", "250"));
+
+		LinkSerial serial = new LinkSerial(serialPort, serialSpeed);
+		serial.Connect();
+		
+		String cncCommand = String.format("F%d X%d", feed, degrees);
+		System.err.println("# setTableAngle() sending '" + cncCommand + "'");
+		serial.sendLine("F" + feed + " X" + degrees + "\r");
+		
+		serial.Disconnect();
+		
+		tableAngle=degrees;
+		
+		if ( null != disp ) {
+			disp.setTurnTableDegrees(tableAngle);
+		}
+	}
+		
+	protected void tableAction() { 
+		if ( ini.getValueSafe("TURNTABLE", "enabled", "0").compareTo("1") != 0 ) {
+			System.err.println("TURNTABLE not enabled. Skipping.");
+			return;
+		}
+		
+		setTableAngle(tableAngle);
+		tableAngle += Integer.parseInt(ini.getValueSafe("TURNTABLE", "degrees", "15"));
+	
+		
+		if ( tableAngle > Integer.parseInt(ini.getValueSafe("TURNTABLE", "exit_greater", "-1")) ) {
+			JOptionPane.showMessageDialog(null, "One rotation of table complete. No longer logging. Terminating upon click.");
+			
+			System.exit(0);
+		}
+		
 	}
 
 	protected void logCMPS12(RecordRDLoggerCellCMPS12 r) {
@@ -64,7 +106,7 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 		
 		NumberFormat f = new DecimalFormat("0.0");
 		
-		String csv=String.format("%04d-%02d-%02d %02d:%02d:%02d, %s, %s, %s, %d, %d, %d, %d, %d, %d,",
+		String csv=String.format("%04d-%02d-%02d %02d:%02d:%02d, %s, %d, %s, %s, %d, %d, %d, %d, %d, %d,",
 				calendar.get(Calendar.YEAR),
 				calendar.get(Calendar.MONTH) + 1,
 				calendar.get(Calendar.DAY_OF_MONTH),
@@ -72,6 +114,7 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 				calendar.get(Calendar.MINUTE),
 				calendar.get(Calendar.SECOND),
 				r.serialNumber,
+				tableAngle,
 				f.format(r.getBearingCMPS12()),
 				f.format(r.getBearingBosch()),
 				r.getPitch(),
@@ -268,6 +311,7 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 				logCMPS12(r);
 			}
 
+			tableAction();
 
 		}
 
@@ -281,7 +325,20 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 		// Open configuration file
 		ini = new IniFile(inifile);
 
-
+		/* set table angle to 0 */
+		if ( ini.getValueSafe("TURNTABLE", "enabled", "0").compareTo("1") == 0 ) {
+			setTableAngle(0);
+			
+			/* wait 5 seconds to table to get into position */
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			/* now normal program startup */
+		}
 
 
 		/* GUI screens */
@@ -322,37 +379,7 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 		}
 
 
-		int errors=0;
-		int buff[] = new int[9];
-		//		while ( null != ( buff=link.getRawPacket('#', buff.length))) {
-		while ( errors > 0 ) {
-			//			RDLoggerLiveRecord rec = new RDLoggerLiveRecord();
-			RecordRDLoggerCell rec = new RecordRDLoggerCell();
-
-			for ( int i=0 ; i<buff.length ; i++ ) {
-				//System.out.print(buff[i] + " ");
-				System.out.printf("[%d] 0x%02X\n",i,buff[i]);
-				buff[i]=(buff[i] & 0xff);
-			}
-			System.out.println();
-
-			rec.parseRecord(buff);
-
-
-			if (rec.isValid()) {
-				disp.updateDisplay(rec);
-
-				//				if ( null != log ) {
-				//					log.log(line,rec.rxDate);
-				//				}
-				//				System.err.println("Errors=" + errors);
-			} else {
-				errors++;
-				System.err.println("Invalid packet received from rdLoggerLive. Errors=" + errors);
-			}
-
-
-		}
+		
 
 
 	}

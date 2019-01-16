@@ -21,6 +21,12 @@ public class WindSmallDisplay {
 	
 	protected Hashtable<String,AnemometerBigTextPanel> ap;
 	
+	protected int turnTable=-1;
+	
+	public void setTurnTableDegrees( int degrees ) {
+		turnTable=degrees;
+	}
+	
 	public void updateStatus() {
 		/* calculate the difference between rec.rxDate and the current date and update status bar */
 		Date d=new Date();
@@ -28,8 +34,11 @@ public class WindSmallDisplay {
 
 		delta=(d.getTime()-recordDate.getTime())/1000;
 		
-		statusLabel.setText("Last record received at " + recordDate + " (" + delta + " seconds ago)");
-
+		if ( turnTable != -1 ) { 
+			statusLabel.setText("Turn Table Commanded to " + turnTable + " degrees. Last record received at " + recordDate + " (" + delta + " seconds ago)");	
+		} else {
+			statusLabel.setText("Last record received at " + recordDate + " (" + delta + " seconds ago)");
+		}
 	}
 	
 	
@@ -118,6 +127,7 @@ public class WindSmallDisplay {
 		statusLabel = new JLabel("No data received.",JLabel.CENTER);
 		statusLabel.setOpaque(true);
 		statusLabel.setBackground(Color.lightGray);
+		statusLabel.setFont(new Font("Serif", Font.BOLD, 18));
 		cont.add(statusLabel, BorderLayout.PAGE_END);
 
 		f.setLocationRelativeTo(null);
