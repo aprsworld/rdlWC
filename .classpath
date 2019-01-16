@@ -4,7 +4,7 @@
 	<classpathentry kind="lib" path="jspComm.jar"/>
 	<classpathentry kind="lib" path="Serialio.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/home/jjj/workspace/rdlWC/jcommon-1.0.10.jar"/>
-	<classpathentry kind="lib" path="/home/jjj/workspace/rdlWC/jfreechart-1.0.6.jar"/>
+	<classpathentry kind="lib" path="jcommon-1.0.10.jar"/>
+	<classpathentry kind="lib" path="jfreechart-1.0.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

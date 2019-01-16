@@ -11,40 +11,55 @@ import javax.swing.border.TitledBorder;
 
 public class AnemometerBigTextPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
-	protected JLabel windSpeed;
-	protected JLabel windGust;
-	protected JLabel windDirection;
-	protected JLabel pitch;
-	protected JLabel roll;
-	protected JLabel windAge;
+	protected JLabel lWindSpeed;
+	protected JLabel lWindGust;
+	protected JLabel lWindDirection;
+	protected JLabel lPitch;
+	protected JLabel lRoll;
+	protected JLabel lWindAge;
+	protected JLabel lCalibration;
+	protected JLabel lBearingBosch;
+	protected JLabel lBearingCMPS12;
 	protected String speedUnits;
 	protected javax.swing.Timer timer;
 	protected int age;
 	protected int maxAge;
+	
+	protected int fontSizeBig, fontSizeSmall;
 		
 	protected void updateStatus() {
 		age++;
 
-		windAge.setText(age + " sec");
+		lWindAge.setText(age + " sec");
 		
 		if ( age > maxAge ) {
 			setBackground(Color.ORANGE);
 		}
 	}
 	
-	public void setWind(double ws, double wg, int wd, int p, int r) {
+	public void setWind(double ws, double wg, int wd, RecordRDLoggerCellCMPS12 rec) {
 
 		
 		NumberFormat f = new DecimalFormat("0.0");
 
-		windSpeed.setText(f.format(ws) + " " + speedUnits);
-		windGust.setText(f.format(wg) + " " + speedUnits);
-		windDirection.setText( wd + "\u00b0");
-		pitch.setText( p + "\u00b0");
-		roll.setText( r + "\u00b0");
+		lWindSpeed.setText(f.format(ws) + " " + speedUnits);
+		lWindGust.setText(f.format(wg) + " " + speedUnits);
+		lWindDirection.setText( wd + "\u00b0");
+		
+		
+		if ( null != rec ) {
+			System.err.println("Updating CMPS12 values on GUI");
+			lBearingBosch.setText( f.format(rec.getBearingBosch()) + "\u00b0");
+			lBearingCMPS12.setText( f.format(rec.getBearingCMPS12()) + "\u00b0");
+			lPitch.setText( rec.getPitch() + "\u00b0");
+			lRoll.setText( rec.getRoll() + "\u00b0");
+			lCalibration.setText( rec.getCalibrationHTML() );
+		}
 
+		
+		
 		/* restart age count */
-		windAge.setText("0 sec");
+		lWindAge.setText("0 sec");
 		setBackground(Color.GREEN);
 		age=0;
 		timer.restart();
@@ -61,6 +76,8 @@ public class AnemometerBigTextPanel extends JPanel {
 		// super(new GridLayout(0,7)); /* 7 columns wide */
 		super(new GridLayout(0,5)); /* 5 columns wide */
 
+		this.fontSizeBig=fontSizeBig;
+		this.fontSizeSmall=fontSizeLabel;
 		
 		age=0;
 		
@@ -70,50 +87,71 @@ public class AnemometerBigTextPanel extends JPanel {
 		setBackground(Color.GRAY);
 //		setBorder(BorderFactory.createTitledBorder(title));
 
-		JLabel rowLabel = new JLabel(title,SwingConstants.CENTER);
-		rowLabel.setBorder(BorderFactory.createTitledBorder(null,"Unit ID",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
-		rowLabel.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
-		rowLabel.setForeground(Color.BLACK);
-		add(rowLabel);
+		JLabel lSerialNumber = new JLabel(title,SwingConstants.CENTER);
+		lSerialNumber.setBorder(BorderFactory.createTitledBorder(null,"Unit ID",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
+		lSerialNumber.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
+		lSerialNumber.setForeground(Color.BLACK);
 
 		
-		windSpeed = new JLabel("",SwingConstants.CENTER);
-		windSpeed.setBorder(BorderFactory.createTitledBorder(null,"Wind Speed",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
-		windSpeed.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
-		windSpeed.setForeground(Color.BLACK);
+		lWindSpeed = new JLabel("",SwingConstants.CENTER);
+		lWindSpeed.setBorder(BorderFactory.createTitledBorder(null,"Wind Speed",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
+		lWindSpeed.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
+		lWindSpeed.setForeground(Color.BLACK);
 
-		windGust = new JLabel("",SwingConstants.CENTER);
-		windGust.setBorder(BorderFactory.createTitledBorder(null,"Wind Gust",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
-		windGust.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
-		windGust.setForeground(Color.BLACK);
+		lWindGust = new JLabel("",SwingConstants.CENTER);
+		lWindGust.setBorder(BorderFactory.createTitledBorder(null,"Wind Gust",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
+		lWindGust.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
+		lWindGust.setForeground(Color.BLACK);
 		
-		windDirection = new JLabel("",SwingConstants.CENTER);
-		windDirection.setBorder(BorderFactory.createTitledBorder(null,"Wind Direction",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
-		windDirection.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
-		windDirection.setForeground(Color.BLACK);
+		lWindDirection = new JLabel("",SwingConstants.CENTER);
+		lWindDirection.setBorder(BorderFactory.createTitledBorder(null,"Wind Direction",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
+		lWindDirection.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
+		lWindDirection.setForeground(Color.BLACK);
 
-		pitch = new JLabel("",SwingConstants.CENTER);
-		pitch.setBorder(BorderFactory.createTitledBorder(null,"Pitch",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
-		pitch.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
-		pitch.setForeground(Color.BLACK);
+		lPitch = new JLabel("",SwingConstants.CENTER);
+		lPitch.setBorder(BorderFactory.createTitledBorder(null,"Pitch",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
+		lPitch.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
+		lPitch.setForeground(Color.BLACK);
 
-		roll = new JLabel("",SwingConstants.CENTER);
-		roll.setBorder(BorderFactory.createTitledBorder(null,"Roll",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
-		roll.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
-		roll.setForeground(Color.BLACK);
+		lRoll = new JLabel("",SwingConstants.CENTER);
+		lRoll.setBorder(BorderFactory.createTitledBorder(null,"Roll",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
+		lRoll.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
+		lRoll.setForeground(Color.BLACK);
 		
 		
-		windAge = new JLabel("",SwingConstants.CENTER);
-		windAge.setBorder(BorderFactory.createTitledBorder(null,"Data Age",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
-		windAge.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
-		windAge.setForeground(Color.BLACK);
+		lWindAge = new JLabel("",SwingConstants.CENTER);
+		lWindAge.setBorder(BorderFactory.createTitledBorder(null,"Data Age",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
+		lWindAge.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
+		lWindAge.setForeground(Color.BLACK);
 
-		add(windSpeed);
-		add(windGust);
-		add(windDirection);
-//		add(pitch);
-//		add(roll);
-		add(windAge);
+		lCalibration = new JLabel("",SwingConstants.CENTER);
+		lCalibration.setBorder(BorderFactory.createTitledBorder(null,"Calibration",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
+		lCalibration.setFont(new Font("Serif", Font.BOLD, fontSizeLabel));
+		lCalibration.setForeground(Color.BLACK);
+		
+		lBearingBosch = new JLabel("",SwingConstants.CENTER);
+		lBearingBosch.setBorder(BorderFactory.createTitledBorder(null,"Bosch Bearing",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
+		lBearingBosch.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
+		lBearingBosch.setForeground(Color.BLACK);
+		
+		lBearingCMPS12 = new JLabel("",SwingConstants.CENTER);
+		lBearingCMPS12.setBorder(BorderFactory.createTitledBorder(null,"CMPS12 Bearing",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
+		lBearingCMPS12.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
+		lBearingCMPS12.setForeground(Color.BLACK);
+		
+		/* first row */
+		add(lSerialNumber);
+		add(lWindSpeed);
+		add(lWindGust);
+		add(lWindDirection);
+		add(lWindAge);
+
+		/* second row */
+		add(lBearingCMPS12);
+		add(lBearingBosch);
+		add(lPitch);
+		add(lRoll);
+		add(lCalibration);
 		
 		/* add a timer to keep our status bar updated */
 		timer = new javax.swing.Timer(1000, new ActionListener() {

@@ -57,7 +57,7 @@ public class WindSmallDisplay {
 		}
 		
 		/* update the anemometer panel with current wind speed and gust */
-		a.setWind(rec.getWindSpeed(),rec.getWindGust(),0,0,0);
+		a.setWind(rec.getWindSpeed(),rec.getWindGust(),-1,null);
 
 		recordDate=rec.rxDate;
 		updateStatus();
@@ -150,7 +150,7 @@ public class WindSmallDisplay {
 			}
 			
 			/* update the anemometer panel with current wind speed and gust */
-			a.setWind(rec.getWindSpeed0(),rec.getWindGust0(),rec.getWindDirectionFromAnalog0(),rec.getPitchFromAnalog1(),rec.getRollFromAnalog1());
+			a.setWind(rec.getWindSpeed0(),rec.getWindGust0(),rec.getWindDirectionFromAnalog0(),null);
 
 			recordDate=rec.rxDate;
 			updateStatus();
@@ -160,4 +160,33 @@ public class WindSmallDisplay {
 		
 		
 	}
+	
+	public void updateDisplayCMPS12(RecordRDLoggerCellCMPS12 rec) {
+		/* timer for updating the status bar */
+		if ( ! timer.isRunning() ) {
+			timer.start();
+		}
+
+		System.err.println("updateDisplayCMPS12");
+		
+		/* find our anemometer panel in ap by serial number or create if needed */
+		AnemometerBigTextPanel a = ap.get(rec.serialNumber);
+		if ( null == a ) {
+			/* create the object and setup the GUI */
+			createAnemometerBigTextPanel(rec.serialNumber);
+			/* now access it */
+			a = ap.get(rec.serialNumber);
+		}
+		
+		/* update the anemometer panel with current wind speed and gust */
+		a.setWind(rec.getWindSpeed0(),rec.getWindGust0(),rec.getWindDirectionFromAnalog0(),rec);
+
+		recordDate=rec.rxDate;
+		updateStatus();
+
+		
+		f.repaint();
+	
+	
+}
 }
