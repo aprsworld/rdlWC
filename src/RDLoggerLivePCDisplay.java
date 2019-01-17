@@ -1,5 +1,6 @@
 
 
+import java.awt.Toolkit;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Calendar;
@@ -18,6 +19,8 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 	protected RecordRDLoggerCell rLive;
 	
 	protected int tableAngle;
+	protected boolean tableDone=false;
+	LinkSerial turnTableSerial=null;
 
 	boolean debug=false;
 
@@ -29,18 +32,27 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 	}
 	
 	protected void setTableAngle(int degrees) {
-		String serialPort = ini.getValueSafe("TURNTABLE", "serial_port", "COM1");
-		int serialSpeed = Integer.parseInt(ini.getValueSafe("TURNTABLE", "speed", "57600"));
+		Toolkit.getDefaultToolkit().beep(); 
+		
+		if ( turnTableSerial == null ) {
+			String serialPort = ini.getValueSafe("TURNTABLE", "serial_port", "COM1");
+			int serialSpeed = Integer.parseInt(ini.getValueSafe("TURNTABLE", "serial_speed", "57600"));
+		
+			System.err.printf("# setTableAngle connecting to serial port %s @ %d\n",serialPort,serialSpeed);
+			turnTableSerial = new LinkSerial(serialPort, serialSpeed);
+			turnTableSerial.Connect();
+		}
+		
 		int feed = Integer.parseInt(ini.getValueSafe("TURNTABLE", "feed", "250"));
 
-		LinkSerial serial = new LinkSerial(serialPort, serialSpeed);
-		serial.Connect();
-		
-		String cncCommand = String.format("F%d X%d", feed, degrees);
+		String cncCommand = String.format("G1 F%d X%d", feed, degrees);
 		System.err.println("# setTableAngle() sending '" + cncCommand + "'");
-		serial.sendLine("F" + feed + " X" + degrees + "\r");
+		turnTableSerial.sendLine("F" + feed + " X" + degrees + "\r");
+		if ( turnTableSerial.dataReady() ) {
+			System.err.println("# CNC said: '" + turnTableSerial.getLine() + "'");
+		}
 		
-		serial.Disconnect();
+		//turnTableSerial.Disconnect();
 		
 		tableAngle=degrees;
 		
@@ -50,22 +62,32 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 	}
 		
 	protected void tableAction() { 
+		if ( tableDone ) {
+			return;
+		}
+		
 		if ( ini.getValueSafe("TURNTABLE", "enabled", "0").compareTo("1") != 0 ) {
 			System.err.println("TURNTABLE not enabled. Skipping.");
 			return;
 		}
 		
 		setTableAngle(tableAngle);
-		tableAngle += Integer.parseInt(ini.getValueSafe("TURNTABLE", "degrees", "15"));
+
 	
 		
 		if ( tableAngle > Integer.parseInt(ini.getValueSafe("TURNTABLE", "exit_greater", "-1")) ) {
-			JOptionPane.showMessageDialog(null, "One rotation of table complete. No longer logging. Terminating upon click.");
-			
-			System.exit(0);
+			tableDone=true;
 		}
+
+		tableAngle += Integer.parseInt(ini.getValueSafe("TURNTABLE", "degrees", "15"));
 		
 	}
+
+	public static long getPID() {
+		String processName = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
+		return Long.parseLong(processName.split("@")[0]);
+	}
+
 
 	protected void logCMPS12(RecordRDLoggerCellCMPS12 r) {
 		//		System.err.println("# logFull() received: " + r);
@@ -73,14 +95,15 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(r.rxDate);
 
-		String filename=String.format("%s/%s_%04d%02d%02d_LIVE.csv",
+		String filename=String.format("%s/%s_%04d%02d%02d_%d_LIVE.csv",
 				liveLogDirectory,
 				r.serialNumber,
 				calendar.get(Calendar.YEAR),
 				calendar.get(Calendar.MONTH) + 1,
-				calendar.get(Calendar.DAY_OF_MONTH)
+				calendar.get(Calendar.DAY_OF_MONTH),
+				getPID()
 				);
-		//System.err.println("# log() generated filename: " + filename);
+		System.err.println("# log() generated filename: " + filename);
 
 /*		
 		String csv=String.format("%04d-%02d-%02d %02d:%02d:%02d, %s, %2.1f, %2.1f, %d, %d, %d, %d, %d, %d, %d, %d",
