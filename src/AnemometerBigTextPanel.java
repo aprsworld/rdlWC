@@ -37,14 +37,14 @@ public class AnemometerBigTextPanel extends JPanel {
 		}
 	}
 	
-	public void setWind(double ws, double wg, int wd, RecordRDLoggerCellCMPS12 rec) {
+	public void setWind(double ws, double wg, double wd, RecordRDLoggerCellCMPS12 rec) {
 
 		
 		NumberFormat f = new DecimalFormat("0.0");
 
 		lWindSpeed.setText(f.format(ws) + " " + speedUnits);
 		lWindGust.setText(f.format(wg) + " " + speedUnits);
-		lWindDirection.setText( wd + "\u00b0");
+		lWindDirection.setText( f.format(wd) + "\u00b0");
 		
 		
 		if ( null != rec ) {

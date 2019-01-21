@@ -189,7 +189,7 @@ public class WindSmallDisplay {
 		}
 		
 		/* update the anemometer panel with current wind speed and gust */
-		a.setWind(rec.getWindSpeed0(),rec.getWindGust0(),rec.getWindDirectionFromAnalog0(),rec);
+		a.setWind(rec.getWindSpeed0(),rec.getWindGust0(),rec.getBearingBosch(),rec);
 
 		recordDate=rec.rxDate;
 		updateStatus();
