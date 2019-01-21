@@ -128,6 +128,10 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 */
 		
 		NumberFormat f = new DecimalFormat("0.0");
+
+		/* header to copy and paste into Excel:
+DATE	SERIAL	TURN TABLE ANGLE	CMPS12 BEARING	BOSCH BEARING	PITCH	ROLL	CAL System	CAL Gyro	CAL Accel	CAL Magnet	CMPS12 raw registers ->	0	1	2	3	4	5	6	7	8	9	10	11	12	13	14	15	16	17	18	19	20	21	22	23	24	25	26	27	28	29	30
+		 */
 		
 		String csv=String.format("%04d-%02d-%02d %02d:%02d:%02d, %s, %d, %s, %s, %d, %d, %d, %d, %d, %d,",
 				calendar.get(Calendar.YEAR),
