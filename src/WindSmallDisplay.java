@@ -100,7 +100,11 @@ public class WindSmallDisplay {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		f.setSize(screenSize.width, screenSize.height);
 
-
+		if ( null != ini.getValue("LIVELOG","filenameMiddle") ) {
+			f.setTitle("LiveLog with " +  ini.getValue("LIVELOG","filenameMiddle"));
+		}
+		
+		
 
 		//		/* fixed size window */
 		//		int width=450;
