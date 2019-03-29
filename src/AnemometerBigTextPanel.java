@@ -147,11 +147,13 @@ public class AnemometerBigTextPanel extends JPanel {
 		add(lWindAge);
 
 		/* second row */
-		add(lBearingCMPS12);
-		add(lBearingBosch);
-		add(lPitch);
-		add(lRoll);
-		add(lCalibration);
+		if ( false ) {
+			add(lBearingCMPS12);
+			add(lBearingBosch);
+			add(lPitch);
+			add(lRoll);
+			add(lCalibration);
+		}
 		
 		/* add a timer to keep our status bar updated */
 		timer = new javax.swing.Timer(1000, new ActionListener() {

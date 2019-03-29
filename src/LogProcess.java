@@ -1,4 +1,5 @@
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -27,6 +28,22 @@ public class LogProcess {
 			}
 		} catch ( IOException e ) {
 			System.err.println("# IO Exception while creating file:\n" + e);
+		}
+	}
+	
+	public void createLog(String filename, String header) {
+		File logFile = new File(filename);
+		
+		if ( logFile.exists() ) {
+			/* it exists, so we just use createLog() */
+			createLog(filename);
+		} else {
+			/* it doesn't exist, so we createLog() and then writeLog() with the header string */
+			createLog(filename);
+			if ( messages ) {
+				System.err.println("# file didn't exist previously. Writing headers.");
+			}
+			writeLog(header);
 		}
 	}
 	

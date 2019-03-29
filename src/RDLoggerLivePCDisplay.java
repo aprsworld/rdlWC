@@ -171,17 +171,27 @@ DATE	SERIAL	WIND SPEED	WIND GUST	WIND COUNT	PULSE TIME	PULSE MIN TIME	CMPS12 BEA
 	}
 
 	protected void logFull(RecordRDLoggerCellFull r) {
+		/* this is the data format that is used in production for Sandia's systems. File format cannot be changed without 
+		 * coordination with Sandia. Don't do it.
+		 */
+
 		//		System.err.println("# logFull() received: " + r);
 
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(r.rxDate);
 
-		String filename=String.format("%s/%s_%04d%02d%02d_LIVE.csv",
+		String filenameMiddle=ini.getValueSafe("LIVELOG","filenameMiddle","_LIVE_");
+		String filenameLast=ini.getValueSafe(r.serialNumber, "filenameLast","");
+		
+		
+		String filename=String.format("%s/%s_%04d%02d%02d%s%s.csv",
 				liveLogDirectory,
 				r.serialNumber,
 				calendar.get(Calendar.YEAR),
 				calendar.get(Calendar.MONTH) + 1,
-				calendar.get(Calendar.DAY_OF_MONTH)
+				calendar.get(Calendar.DAY_OF_MONTH),
+				filenameMiddle,
+				filenameLast
 				);
 		//System.err.println("# log() generated filename: " + filename);
 
@@ -207,9 +217,32 @@ DATE	SERIAL	WIND SPEED	WIND GUST	WIND COUNT	PULSE TIME	PULSE MIN TIME	CMPS12 BEA
 
 		System.err.println("# log() CSV '" + csv + "'");
 
-
-		LogProcess log = new LogProcess(false);
-		log.createLog(filename);
+		
+		/* get headers from ini file */
+		StringBuilder header = new StringBuilder();
+		
+		if ( ini.hasSubject(r.serialNumber) ) {
+			System.err.println("# ini file has a subject of `" + r.serialNumber + "'");
+			
+			/* attempt to read header lines until we don't get one */
+			for ( int i=0 ; i<10 ; i++ ) {
+				String s = ini.getValue(r.serialNumber, "header" + i);
+				
+				if ( null != s ) {
+					header.append(s);
+					header.append(System.getProperty("line.separator"));
+				} else {
+					break;
+				}
+			}
+			
+		}
+		
+		
+		
+		LogProcess log = new LogProcess(true);
+		
+		log.createLog(filename,header.toString());
 		log.writeLog(csv + System.getProperty("line.separator"));
 		log.closeLog();
 	}
@@ -305,12 +338,13 @@ DATE	SERIAL	WIND SPEED	WIND GUST	WIND COUNT	PULSE TIME	PULSE MIN TIME	CMPS12 BEA
 
 			RecordRDLoggerCellFull r = new RecordRDLoggerCellFull();
 			r.parseRecord(packet.data);
-			System.out.println("# decoded: " + r.toString());
-			System.out.flush();
 
-			System.out.println("# wind direction=" + r.getWindDirectionFromAnalog0());
-			System.out.println("#          pitch=" + r.getPitchFromAnalog1());
-			System.out.println("#           roll=" + r.getRollFromAnalog1());
+//			System.out.println("# decoded: " + r.toString());
+//			System.out.flush();
+
+//			System.out.println("# wind direction=" + r.getWindDirectionFromAnalog0());
+//			System.out.println("#          pitch=" + r.getPitchFromAnalog1());
+//			System.out.println("#           roll=" + r.getRollFromAnalog1());
 
 			if ( null != disp ) {
 				disp.updateDisplayFull(r);
