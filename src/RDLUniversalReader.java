@@ -129,9 +129,11 @@ public class RDLUniversalReader implements SerialPortEventListener {
 
 			System.err.println("# capturedPacket (buff.size()=" + buff.size() + ") serial='" + sb + "'");
 
-			System.err.println("# buff dump:");
-			for ( int i=0 ; i<buff.size() ; i++ ) {
-				System.err.printf("# [%2d] 0x%02X\n", i,buff.elementAt(i));
+			if ( debug ) {
+				System.err.println("# buff dump:");
+				for ( int i=0 ; i<buff.size() ; i++ ) {
+					System.err.printf("# [%2d] 0x%02X\n", i,buff.elementAt(i));
+				}
 			}
 		}
 
@@ -162,9 +164,14 @@ public class RDLUniversalReader implements SerialPortEventListener {
 
 	private void tryPacket() {
 
-		if ( buff.size() >= 6 ) {
+		if ( buff.size() >= 8 ) {
 			/* try our CRC */
 			int rLength = buff.elementAt(4);
+			
+			if ( 0xff == rLength ) {
+				rLength = (buff.elementAt(6)<<8) + buff.elementAt(7);
+			}
+			
 			if ( buff.size() == rLength ) {
 
 				if ( debug ) {

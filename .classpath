@@ -6,5 +6,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="jcommon-1.0.10.jar"/>
 	<classpathentry kind="lib" path="jfreechart-1.0.6.jar"/>
+	<classpathentry kind="lib" path="marineapi-0.11.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

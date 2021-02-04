@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
+import net.sf.marineapi.nmea.sentence.*;
 
 public class WindSmallDisplay {
 	protected AnemometerBigTextPanel anemometer;
@@ -67,7 +68,7 @@ public class WindSmallDisplay {
 		}
 
 		/* update the anemometer panel with current wind speed and gust */
-		a.setWind(rec.getWindSpeed(),rec.getWindGust(),-1,null);
+		a.setWind(rec.getWindSpeed(),rec.getWindGust(),null,null,null,null);
 
 		recordDate=rec.rxDate;
 		updateStatus();
@@ -181,7 +182,7 @@ public class WindSmallDisplay {
 		}
 
 		/* update the anemometer panel with current wind speed and gust */
-		a.setWind(rec.getWindSpeed0(),rec.getWindGust0(),rec.getWindDirectionFromAnalog0(),null);
+		a.setWind(rec.getWindSpeed0(),rec.getWindGust0(),new Double(rec.getWindDirectionFromAnalog0()),null,null,null);
 
 		recordDate=rec.rxDate;
 		updateStatus();
@@ -210,7 +211,54 @@ public class WindSmallDisplay {
 		}
 
 		/* update the anemometer panel with current wind speed and gust */
-		a.setWind(rec.getWindSpeed0(),rec.getWindGust0(),rec.getBearingBosch(),rec);
+		a.setWind(rec.getWindSpeed0(),rec.getWindGust0(),new Double(rec.getBearingBosch()),null,rec,null);
+
+		recordDate=rec.rxDate;
+		updateStatus();
+
+
+		f.repaint();
+
+
+	}
+	
+	public void updateDisplayVectorWindXTC(RecordVectorWindXTC rec) {
+		/* timer for updating the status bar */
+		if ( ! timer.isRunning() ) {
+			timer.start();
+		}
+
+		System.err.println("updateDisplayVectorWindXTC");
+
+		/* find our anemometer panel in ap by serial number or create if needed */
+		AnemometerBigTextPanel a = ap.get(rec.serialNumber);
+		if ( null == a ) {
+			/* create the object and setup the GUI */
+			createAnemometerBigTextPanel(rec.serialNumber);
+			/* now access it */
+			a = ap.get(rec.serialNumber);
+		}
+
+		/* get our HDT and use for direction */
+		Double direction;
+		
+		HDTSentence hdt = (HDTSentence) rec.gnss_sentences.get("HDT");
+		
+		if ( null == hdt ) {
+			direction=null;			
+		} else {
+			try {
+				direction=new Double(hdt.getHeading());
+				System.err.println("# HDT getHeading=" + hdt.getHeading() + " direction=" + direction);
+			} catch ( Exception e ) {
+				direction=null;
+			}
+		}
+		
+		
+		
+		/* update the anemometer panel with current wind speed and gust */
+		a.setWind(rec.getWindSpeed0(),rec.getWindGust0(),direction,rec.getVerticalWindSpeedRangeChecked(),null,rec);
 
 		recordDate=rec.rxDate;
 		updateStatus();

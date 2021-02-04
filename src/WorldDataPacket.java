@@ -67,6 +67,10 @@ public class WorldDataPacket {
 		length = rdata[4];
 		type = rdata[5];
 		
+		if ( 0xff == length ) {
+			length = (rdata[6]<<8) + rdata[7];
+		}
+		
 		int i=0;
 		int j=0;
 		for ( ; i<rdata.length-2 ; i++,j++ ) {

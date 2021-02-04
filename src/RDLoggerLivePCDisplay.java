@@ -90,6 +90,70 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 	}
 
 
+	protected void logVectorWindXTC(RecordVectorWindXTC r) {
+		//		System.err.println("# logFull() received: " + r);
+
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(r.rxDate);
+
+		String filename=String.format("%s/%s_%04d%02d%02d_LIVE.csv",
+				liveLogDirectory,
+				r.serialNumber,
+				calendar.get(Calendar.YEAR),
+				calendar.get(Calendar.MONTH) + 1,
+				calendar.get(Calendar.DAY_OF_MONTH)
+				);
+		System.err.println("# log() generated filename: " + filename);
+
+
+		
+		NumberFormat f = new DecimalFormat("0.0");
+
+		/* header to copy and paste into Excel:
+DATE	SERIAL	WIND SPEED	WIND GUST	WIND COUNT	PULSE TIME	PULSE MIN TIME	CMPS12 BEARING	BOSCH BEARING	PITCH	ROLL	CAL System	CAL Gyro	CAL Accel	CAL Magnet	TURN TABLE	CMPS12 raw registers ->	0	1	2	3	4	5	6	7	8	9	10	11	12	13	14	15	16	17	18	19	20	21	22	23	24	25	26	27	28	29	30
+		 */
+
+		/*
+		String csv=String.format("%04d-%02d-%02d %02d:%02d:%02d, %s, %s, %s, %d, %d, %d, %s, %s, %d, %d, %d, %d, %d, %d, %d,",
+				calendar.get(Calendar.YEAR),
+				calendar.get(Calendar.MONTH) + 1,
+				calendar.get(Calendar.DAY_OF_MONTH),
+				calendar.get(Calendar.HOUR_OF_DAY),
+				calendar.get(Calendar.MINUTE),
+				calendar.get(Calendar.SECOND),
+				r.serialNumber,
+				f.format(r.getWindSpeed0()),
+				f.format(r.getWindGust0()),
+				r.windCount0,
+				r.tPulseTime0,
+				r.tPulseMinTime0,
+				f.format(r.getBearingCMPS12()),
+				f.format(r.getBearingBosch()),
+				r.getPitch(),
+				r.getRoll(),
+				r.getCalibrationCMPS12Sy(),
+				r.getCalibrationCMPS12Gy(),
+				r.getCalibrationCMPS12Ac(),
+				r.getCalibrationCMPS12Ma(),
+				tableAngle
+				);
+		for ( int i=0 ; i<r.cmps12_register.length ; i++ ) {
+			csv = csv.concat(", " + r.cmps12_register[i]);
+		}
+		*/
+		
+		String csv = "stub";
+		
+		System.err.println("# log() CSV '" + csv + "'");
+
+
+		LogProcess log = new LogProcess(false);
+		log.createLog(filename);
+		log.writeLog(csv + System.getProperty("line.separator"));
+		log.closeLog();
+	}
+
+	
 	protected void logCMPS12(RecordRDLoggerCellCMPS12 r) {
 		//		System.err.println("# logFull() received: " + r);
 
@@ -379,6 +443,26 @@ DATE	SERIAL	WIND SPEED	WIND GUST	WIND COUNT	PULSE TIME	PULSE MIN TIME	CMPS12 BEA
 
 			tableAction();
 
+		} else if ( 38 == packet.type ) {
+			/* vectorWindXTC */
+			String serial = packet.serial_prefix + Integer.toString(packet.serial_number);
+			//					System.out.println("# rdLoggerLive packet serial number = '" + serial + "'");
+
+
+			RecordVectorWindXTC r = new RecordVectorWindXTC();
+			r.parseRecord(packet.data);
+			System.out.println("# VectorWindXTC decoded: " + r.toString());
+
+
+			if ( null != disp ) {
+				disp.updateDisplayVectorWindXTC(r);
+			}
+
+			/* log if we have something that appears to be a directory */
+			if ( 0 != liveLogDirectory.compareTo("") ) {
+				logVectorWindXTC(r);
+			}
+			
 		}
 
 
