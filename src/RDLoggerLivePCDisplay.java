@@ -8,6 +8,8 @@ import java.util.GregorianCalendar;
 
 import javax.swing.JOptionPane;
 
+import org.apache.commons.text.*;
+
 /* master server */
 class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 	protected String inifile;
@@ -110,11 +112,25 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 		NumberFormat f = new DecimalFormat("0.0");
 
 		/* header to copy and paste into Excel:
-DATE	SERIAL	WIND SPEED	WIND GUST	WIND COUNT	PULSE TIME	PULSE MIN TIME	CMPS12 BEARING	BOSCH BEARING	PITCH	ROLL	CAL System	CAL Gyro	CAL Accel	CAL Magnet	TURN TABLE	CMPS12 raw registers ->	0	1	2	3	4	5	6	7	8	9	10	11	12	13	14	15	16	17	18	19	20	21	22	23	24	25	26	27	28	29	30
+DATE	
+SERIAL	
+WIND SPEED (m/s)	
+WIND GUST (m/s)
+WIND COUNT	
+PULSE TIME	
+PULSE MIN TIME
+INPUT VOLTAGE ADC
+INPUT VOLTAGE
+VERTICAL INPUT ADC
+VERTICAL WIND SPEED (m/s)
+WIND VANE ADC
+WIND VANE DIRECTION (degrees)
+SEQUENCE NUMBER
+LIVE AGE (milliseconds)
+GNSS AGE (milliseconds)
 		 */
 
-		/*
-		String csv=String.format("%04d-%02d-%02d %02d:%02d:%02d, %s, %s, %s, %d, %d, %d, %s, %s, %d, %d, %d, %d, %d, %d, %d,",
+		String csv=String.format("%04d-%02d-%02d %02d:%02d:%02d,%s,%s,%s,%d,%d,%d,%d,%s,%d,%s,%d,%d,%d,%d,%d,%s",
 				calendar.get(Calendar.YEAR),
 				calendar.get(Calendar.MONTH) + 1,
 				calendar.get(Calendar.DAY_OF_MONTH),
@@ -127,22 +143,19 @@ DATE	SERIAL	WIND SPEED	WIND GUST	WIND COUNT	PULSE TIME	PULSE MIN TIME	CMPS12 BEA
 				r.windCount0,
 				r.tPulseTime0,
 				r.tPulseMinTime0,
-				f.format(r.getBearingCMPS12()),
-				f.format(r.getBearingBosch()),
-				r.getPitch(),
-				r.getRoll(),
-				r.getCalibrationCMPS12Sy(),
-				r.getCalibrationCMPS12Gy(),
-				r.getCalibrationCMPS12Ac(),
-				r.getCalibrationCMPS12Ma(),
-				tableAngle
+				r.input_voltage_adc,
+				f.format(r.getInputVoltage()),
+				r.vertical_anemometer_adc,
+				f.format(r.getVerticalWindSpeed()),
+				r.wind_vane_adc,
+				r.getWindVaneDirection(),
+				r.sequence,
+				r.live_age_milliseconds,
+				r.gnss_age_milliseconds,
+				StringEscapeUtils.escapeCsv(r.gnss_nmea)
 				);
-		for ( int i=0 ; i<r.cmps12_register.length ; i++ ) {
-			csv = csv.concat(", " + r.cmps12_register[i]);
-		}
-		*/
 		
-		String csv = "stub";
+//		String escaped = StringEscapeUtils.escapeCsv
 		
 		System.err.println("# log() CSV '" + csv + "'");
 

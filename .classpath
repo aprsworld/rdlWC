@@ -7,5 +7,7 @@
 	<classpathentry kind="lib" path="jcommon-1.0.10.jar"/>
 	<classpathentry kind="lib" path="jfreechart-1.0.6.jar"/>
 	<classpathentry kind="lib" path="marineapi-0.11.0.jar"/>
+	<classpathentry kind="lib" path="commons-text-1.9.jar"/>
+	<classpathentry kind="lib" path="commons-lang3-3.11.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

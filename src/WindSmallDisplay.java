@@ -199,7 +199,7 @@ public class WindSmallDisplay {
 			timer.start();
 		}
 
-		System.err.println("updateDisplayCMPS12");
+//		System.err.println("updateDisplayCMPS12");
 
 		/* find our anemometer panel in ap by serial number or create if needed */
 		AnemometerBigTextPanel a = ap.get(rec.serialNumber);
@@ -228,7 +228,7 @@ public class WindSmallDisplay {
 			timer.start();
 		}
 
-		System.err.println("updateDisplayVectorWindXTC");
+//		System.err.println("updateDisplayVectorWindXTC");
 
 		/* find our anemometer panel in ap by serial number or create if needed */
 		AnemometerBigTextPanel a = ap.get(rec.serialNumber);
