@@ -61,16 +61,17 @@ public class AnemometerBigTextPanel extends JPanel {
 			/* add to VectorWindXTC specific tool tips */
 			String lsn_tip = "<html>";
 			
-			/* add GPRMC data */
+			/* add additional GNSS data */
 			RMCSentence rmc = (RMCSentence) recV.gnss_sentences.get("RMC");
 			GGASentence gga = (GGASentence) recV.gnss_sentences.get("GGA");
 						
 			if ( null != rmc ) {
 				lsn_tip += "GNSS RMC {<br />";
-				lsn_tip += "     Date: " + rmc.getDate().toISO8601() + " " + rmc.getTime().toISO8601() + "<br />";
-				lsn_tip += "     Position: " + rmc.getPosition() + "<br />";
-				lsn_tip += "     Mode: " + rmc.getMode() + "<br />";
-				lsn_tip += "     Status: " + rmc.getStatus() + "<br />";
+				lsn_tip += "     Date:      " + rmc.getDate().toISO8601() + "<br />";
+				lsn_tip += "     Time:      " + rmc.getTime().toISO8601() + "<br />";
+				lsn_tip += "     Position:  " + rmc.getPosition() + "<br />";
+				lsn_tip += "     Mode:      " + rmc.getMode() + "<br />";
+				lsn_tip += "     Status:    " + rmc.getStatus() + "<br />";
 				lsn_tip += "}<br />";
 /*
   				System.err.println("# RMC sentence ID: " + rmc.getSentenceId() );
@@ -87,9 +88,11 @@ public class AnemometerBigTextPanel extends JPanel {
 			
 			if ( null != gga ) {
 				lsn_tip += "GNSS GGA {<br />";
-//				lsn_tip += "     Date: " + gga.getDate().toISO8601() + " " + gga.getTime().toISO8601() + "<br />";
+				lsn_tip += "     Time:      " + gga.getTime().toISO8601() + "<br />";
 				lsn_tip += "     Position:  " + gga.getPosition() + "<br />";
-				lsn_tip += "     Altitude:  " + gga.getAltitude() + " " + gga.getAltitudeUnits() + "<br />";
+//				lsn_tip += "     Latitude:  " + gga.getPosition().getLatitude() + "<br />";
+//				lsn_tip += "     Longitude: " + gga.getPosition().getLongitude() + "<br />";
+//				lsn_tip += "     Altitude:  " + gga.getAltitude() + " " + gga.getAltitudeUnits() + "<br />";
 				lsn_tip += "     Quality:   " + gga.getFixQuality() + "<br />";
 				lsn_tip += "     SV in use: " + gga.getSatelliteCount() + "<br />";
 				lsn_tip += "     HDOP:      " + gga.getHorizontalDOP() + "<br />";

@@ -8,6 +8,8 @@ import java.util.GregorianCalendar;
 
 import javax.swing.JOptionPane;
 
+import net.sf.marineapi.nmea.sentence.*;
+
 import org.apache.commons.text.*;
 
 /* master server */
@@ -97,39 +99,33 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(r.rxDate);
-
-		String filename=String.format("%s/%s_%04d%02d%02d_LIVE.csv",
+		
+		String filenameMiddle=ini.getValueSafe("LIVELOG","filenameMiddle","_LIVE_");
+		String filenameLast=ini.getValueSafe(r.serialNumber, "filenameLast","");
+		
+		
+		String filename=String.format("%s/%s_%04d%02d%02d%s%s.csv",
 				liveLogDirectory,
 				r.serialNumber,
 				calendar.get(Calendar.YEAR),
 				calendar.get(Calendar.MONTH) + 1,
-				calendar.get(Calendar.DAY_OF_MONTH)
+				calendar.get(Calendar.DAY_OF_MONTH),
+				filenameMiddle,
+				filenameLast
 				);
+
 		System.err.println("# log() generated filename: " + filename);
 
 
 		
 		NumberFormat f = new DecimalFormat("0.0");
 
-		/* header to copy and paste into Excel:
-DATE	
-SERIAL	
-WIND SPEED (m/s)	
-WIND GUST (m/s)
-WIND COUNT	
-PULSE TIME	
-PULSE MIN TIME
-INPUT VOLTAGE ADC
-INPUT VOLTAGE
-VERTICAL INPUT ADC
-VERTICAL WIND SPEED (m/s)
-WIND VANE ADC
-WIND VANE DIRECTION (degrees)
-SEQUENCE NUMBER
-LIVE AGE (milliseconds)
-GNSS AGE (milliseconds)
-		 */
+		
+		String header="DATE,SERIAL,WIND SPEED (m/s),WIND GUST (m/s),WIND COUNT,PULSE TIME,PULSE MIN TIME,INPUT VOLTAGE ADC,INPUT VOLTAGE,VERTICAL INPUT ADC,VERTICAL WIND SPEED (m/s),WIND VANE ADC,WIND VANE DIRECTION (degrees),SEQUENCE NUMBER,LIVE AGE (milliseconds),GNSS AGE (milliseconds),GNSS NMEA";		 
 
+
+		
+		
 		String csv=String.format("%04d-%02d-%02d %02d:%02d:%02d,%s,%s,%s,%d,%d,%d,%d,%s,%d,%s,%d,%d,%d,%d,%d,%s",
 				calendar.get(Calendar.YEAR),
 				calendar.get(Calendar.MONTH) + 1,
@@ -155,13 +151,89 @@ GNSS AGE (milliseconds)
 				StringEscapeUtils.escapeCsv(r.gnss_nmea)
 				);
 		
+		/* add additional GNSS data */
+		
+		/* HDT sentence */
+		HDTSentence hdt = (HDTSentence) r.gnss_sentences.get("HDT");
+		header += ",HDT VALID,HDT HEADING (DEGREES),HDT TRUE";
+		if ( null != hdt ) {
+			if ( hdt.isValid() ) {
+				csv += String.format(",1,%s,%d",f.format(hdt.getHeading()),hdt.isTrue() ? 1 : 0);
+			} else {
+				csv += ",0,,";
+			}
+		} else {
+			csv += ",,,";
+		}
+
+		/* GGA sentence */
+		GGASentence gga = (GGASentence) r.gnss_sentences.get("GGA");
+		header += ",GGA VALID,GGA TIME,GGA LATITUDE,GGA LONGITUDE,GGA QUALITY,GGA N SV,GGA HDOP (meters),GGA HEIGHT (meters),GGA DGPS AGE,GGA REF STATION";
+		if ( null != gga ) {
+			if ( gga.isValid() ) {
+				csv += String.format(",1,%s,%s,%s,%s,%s,%s,%s,%s,%s",
+						gga.getTime(),
+						gga.getPosition().getLatitude(),
+						gga.getPosition().getLongitude(),
+						gga.getFixQuality(),
+						gga.getSatelliteCount(),
+						gga.getHorizontalDOP(),
+						gga.getPosition().getAltitude(),
+						gga.getDgpsAge(),
+						gga.getDgpsStationId()
+						);
+			} else {
+				csv += ",0,,,,,,,,,";
+			}
+		} else { 
+			csv += ",,,,,,,,,,";
+		}
+		
+		
+		
+		/* RMC sentence */
+		RMCSentence rmc = (RMCSentence) r.gnss_sentences.get("RMC");
+		header += ",RMC VALID,RMC DATE,RMC TIME,RMC STATUS,RMC LATITUDE,RMC LONGITUDE,RMC SPEED OVER GROUND (knots),RMC TRACK ANGLE TRUE (degrees),RMC MAGNETIC VARIATION (degrees)";
+		if ( null != rmc ) {
+			if ( rmc.isValid() ) {
+			csv += String.format(",1,%s,%s,%s,%s,%s,%s,%s,%s",
+					rmc.getDate(),
+					rmc.getTime(),
+					rmc.getStatus(),
+					rmc.getPosition().getLatitude(),
+					rmc.getPosition().getLongitude(),
+					f.format(rmc.getSpeed()),
+					f.format(rmc.getCourse()),
+					f.format(rmc.getVariation())
+					);
+			} else {
+				csv += ",0,,,,,,,,";
+			}
+		} else {
+			csv += ",,,,,,,,,";
+		}
+
+		
+		
+		
+		/*
+		HDT VALID	HDT HEADING (DEGREES)	HDT TRUE		
+		
+		GGA VALID	GGA UTC OF FIX	GGA LATITUDE
+
+		*/
+
+		
+		
+		
+		
 //		String escaped = StringEscapeUtils.escapeCsv
 		
 		System.err.println("# log() CSV '" + csv + "'");
 
 
 		LogProcess log = new LogProcess(false);
-		log.createLog(filename);
+		log.createLog(filename,header +  System.getProperty("line.separator"));
 		log.writeLog(csv + System.getProperty("line.separator"));
 		log.closeLog();
 	}
