@@ -8,7 +8,7 @@ import java.text.NumberFormat;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
-import net.sf.marineapi.nmea.sentence.HDTSentence;
+
 import net.sf.marineapi.nmea.sentence.*;
 
 public class AnemometerBigTextPanel extends JPanel {
@@ -18,13 +18,9 @@ public class AnemometerBigTextPanel extends JPanel {
 	protected JLabel lWindGust;
 	protected JLabel lWindDirection;
 	protected JLabel lWindVertical;
-	
-	protected JLabel lPitch;
-	protected JLabel lRoll;
+	protected JLabel lGNSSAltitude;
 	protected JLabel lWindAge;
-	protected JLabel lCalibration;
-	protected JLabel lBearingBosch;
-	protected JLabel lBearingCMPS12;
+	
 	protected String speedUnits;
 	protected javax.swing.Timer timer;
 	protected int age;
@@ -67,9 +63,10 @@ public class AnemometerBigTextPanel extends JPanel {
 			
 			/* add GPRMC data */
 			RMCSentence rmc = (RMCSentence) recV.gnss_sentences.get("RMC");
+			GGASentence gga = (GGASentence) recV.gnss_sentences.get("GGA");
 						
 			if ( null != rmc ) {
-				lsn_tip += "GNSS {<br />";
+				lsn_tip += "GNSS RMC {<br />";
 				lsn_tip += "     Date: " + rmc.getDate().toISO8601() + " " + rmc.getTime().toISO8601() + "<br />";
 				lsn_tip += "     Position: " + rmc.getPosition() + "<br />";
 				lsn_tip += "     Mode: " + rmc.getMode() + "<br />";
@@ -86,6 +83,23 @@ public class AnemometerBigTextPanel extends JPanel {
 				System.err.println("# RMC valid:       " + rmc.isValid() );
 */				
  
+			} 
+			
+			if ( null != gga ) {
+				lsn_tip += "GNSS GGA {<br />";
+//				lsn_tip += "     Date: " + gga.getDate().toISO8601() + " " + gga.getTime().toISO8601() + "<br />";
+				lsn_tip += "     Position:  " + gga.getPosition() + "<br />";
+				lsn_tip += "     Altitude:  " + gga.getAltitude() + " " + gga.getAltitudeUnits() + "<br />";
+				lsn_tip += "     Quality:   " + gga.getFixQuality() + "<br />";
+				lsn_tip += "     SV in use: " + gga.getSatelliteCount() + "<br />";
+				lsn_tip += "     HDOP:      " + gga.getHorizontalDOP() + "<br />";
+				lsn_tip += "     Geod Sep:  " + gga.getGeoidalHeight() + " " + gga.getGeoidalHeightUnits() + "<br />";
+				lsn_tip += "     Diff Age:  " + gga.getDgpsAge() + "<br />";
+				lsn_tip += "}<br />";				
+				
+				lGNSSAltitude.setText(f.format(gga.getAltitude()));
+			} else {
+				lGNSSAltitude.setText("");
 			}
 			
 			
@@ -95,16 +109,6 @@ public class AnemometerBigTextPanel extends JPanel {
 			
 			lWindAge.setToolTipText("Battery: " + f.format(recV.getInputVoltage()) + "V");
 		}
-		
-		if ( null != rec ) {
-			System.err.println("Updating CMPS12 values on GUI");
-			lBearingBosch.setText( f.format(rec.getBearingBosch()) + "\u00b0");
-			lBearingCMPS12.setText( f.format(rec.getBearingCMPS12()) + "\u00b0");
-			lPitch.setText( rec.getPitch() + "\u00b0");
-			lRoll.setText( rec.getRoll() + "\u00b0");
-			lCalibration.setText( rec.getCalibrationHTML() );
-		}
-
 		
 		
 		/* restart age count */
@@ -123,7 +127,7 @@ public class AnemometerBigTextPanel extends JPanel {
 
 	public AnemometerBigTextPanel(String title, String sUnits, int mAge, int fontSizeBig, int fontSizeLabel) {
 		// super(new GridLayout(0,7)); /* 7 columns wide */
-		super(new GridLayout(0,6)); /* 6 columns wide */
+		super(new GridLayout(0,7)); /* 6 columns wide */
 
 		this.fontSizeBig=fontSizeBig;
 		this.fontSizeSmall=fontSizeLabel;
@@ -169,32 +173,11 @@ public class AnemometerBigTextPanel extends JPanel {
 		lWindAge.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
 		lWindAge.setForeground(Color.BLACK);
 
-		lPitch = new JLabel("",SwingConstants.CENTER);
-		lPitch.setBorder(BorderFactory.createTitledBorder(null,"Pitch",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
-		lPitch.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
-		lPitch.setForeground(Color.BLACK);
+		lGNSSAltitude = new JLabel("",SwingConstants.CENTER);
+		lGNSSAltitude.setBorder(BorderFactory.createTitledBorder(null,"Altitude (meters)",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
+		lGNSSAltitude.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
+		lGNSSAltitude.setForeground(Color.BLACK);
 
-		lRoll = new JLabel("",SwingConstants.CENTER);
-		lRoll.setBorder(BorderFactory.createTitledBorder(null,"Roll",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
-		lRoll.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
-		lRoll.setForeground(Color.BLACK);
-		
-	
-		
-		lCalibration = new JLabel("",SwingConstants.CENTER);
-		lCalibration.setBorder(BorderFactory.createTitledBorder(null,"Calibration",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
-		lCalibration.setFont(new Font("Serif", Font.BOLD, fontSizeLabel));
-		lCalibration.setForeground(Color.BLACK);
-		
-		lBearingBosch = new JLabel("",SwingConstants.CENTER);
-		lBearingBosch.setBorder(BorderFactory.createTitledBorder(null,"Bosch Bearing",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
-		lBearingBosch.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
-		lBearingBosch.setForeground(Color.BLACK);
-		
-		lBearingCMPS12 = new JLabel("",SwingConstants.CENTER);
-		lBearingCMPS12.setBorder(BorderFactory.createTitledBorder(null,"CMPS12 Bearing",TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,new Font("times new roman",Font.BOLD,fontSizeLabel), Color.BLACK));
-		lBearingCMPS12.setFont(new Font("Serif", Font.BOLD, fontSizeBig));
-		lBearingCMPS12.setForeground(Color.BLACK);
 		
 		/* first row */
 		add(lSerialNumber);
@@ -202,16 +185,8 @@ public class AnemometerBigTextPanel extends JPanel {
 		add(lWindGust);
 		add(lWindDirection);
 		add(lWindVertical);
+		add(lGNSSAltitude);
 		add(lWindAge);
-
-		/* second row */
-		if ( false ) {
-			add(lBearingCMPS12);
-			add(lBearingBosch);
-			add(lPitch);
-			add(lRoll);
-			add(lCalibration);
-		}
 		
 		/* add a timer to keep our status bar updated */
 		timer = new javax.swing.Timer(1000, new ActionListener() {
