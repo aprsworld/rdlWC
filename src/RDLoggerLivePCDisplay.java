@@ -231,9 +231,37 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 		
 		System.err.println("# log() CSV '" + csv + "'");
 
+		
+		/* get headers from ini file */
+		StringBuilder headerFromIni = new StringBuilder();
+		
+		if ( ini.hasSubject(r.serialNumber) ) {
+			System.err.println("# ini file has a subject of `" + r.serialNumber + "'");
+			
+			/* attempt to read header lines until we don't get one */
+			for ( int i=0 ; i<10 ; i++ ) {
+				String s = ini.getValue(r.serialNumber, "header" + i);
+				
+				if ( null != s ) {
+					headerFromIni.append(s);
+					headerFromIni.append(System.getProperty("line.separator"));
+				} else {
+					break;
+				}
+			}
+			
+		}
+
+		/* merge header from INI file with header with column labels */
+		if ( headerFromIni.length() > 0 ) {
+			headerFromIni.append(System.getProperty("line.separator"));
+		}
+	
+		headerFromIni.append(header);
+		headerFromIni.append(System.getProperty("line.separator"));
 
 		LogProcess log = new LogProcess(false);
-		log.createLog(filename,header +  System.getProperty("line.separator"));
+		log.createLog(filename,headerFromIni.toString());
 		log.writeLog(csv + System.getProperty("line.separator"));
 		log.closeLog();
 	}
