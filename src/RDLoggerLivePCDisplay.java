@@ -213,21 +213,22 @@ class RDLoggerLivePCDisplay extends Thread implements PacketListener {
 			csv += ",,,,,,,,,";
 		}
 
+		/* PSAT,HPR sentence */
+		NMEASentencePSAT psat = (NMEASentencePSAT) r.gnss_sentences.get("SAT");
+		header += ",PSAT HPR TIME,PSAT HPR HEADING (degrees),PSAT HPR PITCH (degrees),PSAT HPR ROLL (degrees),PSAT HPR TYPE";
+		if ( null != psat && psat.isHPR() ) {
+			csv += String.format(",%s,%s,%s,%s,%s",
+					psat.getHPRTime(),
+					psat.getHPRHeading(),
+					psat.getHPRPitch(),
+					psat.getHPRRoll(),
+					psat.getHPRType()
+			);
+		} else {
+			csv += ",,,,,";
+		}
 		
 		
-		
-		/*
-		HDT VALID	HDT HEADING (DEGREES)	HDT TRUE		
-		
-		GGA VALID	GGA UTC OF FIX	GGA LATITUDE
-
-		*/
-
-		
-		
-		
-		
-//		String escaped = StringEscapeUtils.escapeCsv
 		
 		System.err.println("# log() CSV '" + csv + "'");
 

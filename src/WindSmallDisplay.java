@@ -239,26 +239,10 @@ public class WindSmallDisplay {
 			a = ap.get(rec.serialNumber);
 		}
 
-		/* get our HDT and use for direction */
-		Double direction;
-		
-		HDTSentence hdt = (HDTSentence) rec.gnss_sentences.get("HDT");
-		
-		if ( null == hdt ) {
-			direction=null;			
-		} else {
-			try {
-				direction=new Double(hdt.getHeading());
-				System.err.println("# HDT getHeading=" + hdt.getHeading() + " direction=" + direction);
-			} catch ( Exception e ) {
-				direction=null;
-			}
-		}
-		
-		
+
 		
 		/* update the anemometer panel with current wind speed and gust */
-		a.setWind(rec.getWindSpeed0(),rec.getWindGust0(),direction,rec.getVerticalWindSpeedRangeChecked(),null,rec);
+		a.setWind(rec.getWindSpeed0(),rec.getWindGust0(),null,rec.getVerticalWindSpeedRangeChecked(),null,rec);
 
 		recordDate=rec.rxDate;
 		updateStatus();

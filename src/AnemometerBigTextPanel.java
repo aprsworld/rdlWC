@@ -35,20 +35,20 @@ public class AnemometerBigTextPanel extends JPanel {
 		
 		if ( age > maxAge ) {
 			setBackground(Color.ORANGE);
-		}
+		}				
 	}
 	
 	public void setWind(double ws, double wg, Double wd, Double wv, RecordRDLoggerCellCMPS12 rec, RecordVectorWindXTC recV) {
-
+		String wdText="";
 		
 		NumberFormat f = new DecimalFormat("0.0");
+		NumberFormat fz = new DecimalFormat("0");
 
 		lWindSpeed.setText(f.format(ws));
 		lWindGust.setText(f.format(wg));
-		if ( null == wd ) {
-			lWindDirection.setText( "");
-		} else {
-			lWindDirection.setText( f.format(wd));
+
+		if ( null != wd ) {
+			wdText=fz.format(wd) + "V";
 		}
 		
 		if ( null == wv ) {
@@ -62,9 +62,22 @@ public class AnemometerBigTextPanel extends JPanel {
 			String lsn_tip = "<html>";
 			
 			/* add additional GNSS data */
+			HDTSentence hdt = (HDTSentence) recV.gnss_sentences.get("HDT");
 			RMCSentence rmc = (RMCSentence) recV.gnss_sentences.get("RMC");
 			GGASentence gga = (GGASentence) recV.gnss_sentences.get("GGA");
-						
+			NMEASentencePSAT psat = (NMEASentencePSAT) recV.gnss_sentences.get("SAT");
+
+			if ( null != hdt ) {
+				lsn_tip += "GNSS HDT {<br />";
+				lsn_tip += "     Heading:   " + hdt.getHeading() + "<br />";
+				lsn_tip += "}<br />";
+				
+				/* set the wind direction to heading if wind direction is empty */
+				if ( 0==wdText.length() ) {
+					wdText = fz.format(hdt.getHeading() + "H");
+				}
+			}
+			
 			if ( null != rmc ) {
 				lsn_tip += "GNSS RMC {<br />";
 				lsn_tip += "     Date:      " + rmc.getDate().toISO8601() + "<br />";
@@ -73,26 +86,12 @@ public class AnemometerBigTextPanel extends JPanel {
 				lsn_tip += "     Mode:      " + rmc.getMode() + "<br />";
 				lsn_tip += "     Status:    " + rmc.getStatus() + "<br />";
 				lsn_tip += "}<br />";
-/*
-  				System.err.println("# RMC sentence ID: " + rmc.getSentenceId() );
-				System.err.println("# RMC date:        " + rmc.getDate().toISO8601() );
-				System.err.println("# RMC time:        " + rmc.getTime().toISO8601() );
-				System.err.println("# RMC position:    " + rmc.getPosition() );
-				System.err.println("# RMC variation:   " + rmc.getVariation() );
-				System.err.println("# RMC mode:        " + rmc.getMode() );
-				System.err.println("# RMC status:      " + rmc.getStatus() );
-				System.err.println("# RMC valid:       " + rmc.isValid() );
-*/				
- 
 			} 
 			
 			if ( null != gga ) {
 				lsn_tip += "GNSS GGA {<br />";
 				lsn_tip += "     Time:      " + gga.getTime().toISO8601() + "<br />";
 				lsn_tip += "     Position:  " + gga.getPosition() + "<br />";
-//				lsn_tip += "     Latitude:  " + gga.getPosition().getLatitude() + "<br />";
-//				lsn_tip += "     Longitude: " + gga.getPosition().getLongitude() + "<br />";
-//				lsn_tip += "     Altitude:  " + gga.getAltitude() + " " + gga.getAltitudeUnits() + "<br />";
 				lsn_tip += "     Quality:   " + gga.getFixQuality() + "<br />";
 				lsn_tip += "     SV in use: " + gga.getSatelliteCount() + "<br />";
 				lsn_tip += "     HDOP:      " + gga.getHorizontalDOP() + "<br />";
@@ -105,6 +104,28 @@ public class AnemometerBigTextPanel extends JPanel {
 				lGNSSAltitude.setText("");
 			}
 			
+			if ( null != psat && psat.isHPR() ) {
+				lsn_tip += "GNSS PSAT HPR {<br />";
+				lsn_tip += "     PSAT type: " + psat.getSubsentenceName() + "<br />";
+				lsn_tip += "     Time:      " + psat.getHPRTime() + "<br />";
+				lsn_tip += "     Heading:   " + psat.getHPRHeading() + "<br />";
+				lsn_tip += "     Pitch:     " + psat.getHPRPitch() + "<br />";
+				lsn_tip += "     Roll:      " + psat.getHPRRoll() + "<br />";
+				lsn_tip += "     Type:      " + psat.getHPRType() + "<br />";
+				lsn_tip += "}<br />";
+				
+				/* set the wind direction to heading if wind direction is empty */
+				if ( 0==wdText.length() ) {
+					wdText = fz.format(psat.getHPRHeading());
+					
+					if ( 0==psat.getHPRType().compareTo("N") ) 
+						wdText += "G"; // GNSS derived
+					else if ( 0==psat.getHPRType().compareTo("G") )
+						wdText += "Y";
+					else 
+						wdText += "?";
+				}
+			}
 			
 			lsn_tip += "</html>";
 			
@@ -112,6 +133,8 @@ public class AnemometerBigTextPanel extends JPanel {
 			
 			lWindAge.setToolTipText("Battery: " + f.format(recV.getInputVoltage()) + "V");
 		}
+
+		lWindDirection.setText(wdText);
 		
 		
 		/* restart age count */
