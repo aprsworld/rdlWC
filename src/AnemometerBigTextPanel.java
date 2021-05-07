@@ -115,7 +115,7 @@ public class AnemometerBigTextPanel extends JPanel {
 				lsn_tip += "}<br />";
 				
 				/* set the wind direction to heading if wind direction is empty */
-				if ( 0==wdText.length() ) {
+				if ( 0==wdText.length() && null != psat.getHPRHeading() ) {
 					wdText = fz.format(psat.getHPRHeading());
 					
 					if ( 0==psat.getHPRType().compareTo("N") ) 

@@ -34,28 +34,28 @@ public class NMEASentenceParserPSAT extends SentenceParser implements NMEASenten
 	}
 
 	public Double getHPRHeading() {
-		if ( ! isHPR() )
+		if ( ! isHPR() || ! hasValue(2) )
 			return null;
 		
 		return Double.parseDouble(getStringValue(2));
 	}
 
 	public Double getHPRPitch() {
-		if ( ! isHPR() )
+		if ( ! isHPR() || ! hasValue(3) )
 			return null;
 		
 		return Double.parseDouble(getStringValue(3));	
 	}
 
 	public Double getHPRRoll() {
-		if ( ! isHPR() )
+		if ( ! isHPR() || ! hasValue(4) )
 			return null;
 		
 		return Double.parseDouble(getStringValue(4));	
 	}
 
 	public String getHPRType() {
-		if ( ! isHPR() )
+		if ( ! isHPR() || ! hasValue(5) )
 			return null;
 		
 		return getStringValue(5);	
